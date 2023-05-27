@@ -1,9 +1,9 @@
 # sign-up
 
-start server:
+start server:  
 npm run build  
 npm run start
 
-dev:
+dev:  
 npm run dev  
 npm run format - eslint fix
