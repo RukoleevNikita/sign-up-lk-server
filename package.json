@@ -1,10 +1,15 @@
 {
-  "name": "y",
+  "name": "sing-up",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "dev": "npx nodemon",
+    "build": "rimraf ./build && npx tsc",
+    "start": "npm run build &&  node build/main",
+    "lint": "npx eslint ./src",
+    "format": "npx eslint ./src --fix"
   },
   "repository": {
     "type": "git",
@@ -17,9 +22,10 @@
   },
   "homepage": "https://github.com/nikitayakovina/startup-client#readme",
   "dependencies": {
+    "@types/express": "^4.17.17",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
-    "express": "^4.18.1",
+    "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",
@@ -28,7 +34,13 @@
     "nodemon": "^2.0.19"
   },
   "devDependencies": {
-    "@types/node": "^20.2.4",
+    "@types/node": "^20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
+    "eslint": "^8.41.0",
+    "prettier": "^2.8.8",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   }
 }
