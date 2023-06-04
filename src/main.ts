@@ -1,76 +1,46 @@
 import express, { Express, Response, Request, ErrorRequestHandler } from 'express';
 import 'dotenv/config';
-import axios from 'axios';
-// import mongoose from 'mongoose';
-// import adminRoute from './adminPanelRoutes.js';
-// import CardProductModel from './models/CardProduct.js';
-// import cors from 'cors';
-// // import { registerValidation, loginValidation } from './validation.js';
-// // import { UserController } from "./controllers/index.js";
-// // import { checkAuth, handleValidationErrors} from './utils/index.js';
-console.log(process.env.API_KEY_SMSRU);
+import mongoose from 'mongoose';
+import cors from 'cors';
+import authenticationRoutes from './routes/authenticationRoutes.js';
 /*
-  "email": "",
-  "password": "",
-  "fullName": ""
+  MONGO
+  * "username": "rukoleevnikita",
+  * "password": "OgM2LHSPGpBDIiCM",
+  * "connectLink": "mongodb+srv://USERNAME_MONGO:process.env.PASSWORD_MONGO@cluster0.rahqltj.mongodb.net/"
 */
-// mongoose
-//   .connect('loginPassword')
-//   .then(() => console.log('Db is connected'))
-//   .catch((err) => console.log('Db error', err));
+mongoose
+  .set('strictQuery', false)
+  .connect(`mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`)
+  .then(() => console.log('Db is connected'))
+  .catch((err) => console.log('Db error', err));
 
 const app: Express = express();
 app.get('/', (req: Request, res: Response) => {
   res.send('hello');
 });
-// app.use(express.json());
-// app.use(cors());
-// app.use('/signup/uploads', express.static('uploads'));
+app.use(express.json());
+app.use(cors());
 
-// app.use('/signup', signupRoute);
+app.use('/api', authenticationRoutes);
 
-// app.get('/getdate/:id', async (req, res) => {
-//   try {
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({
-//       error: 'Failed to load selected date',
-//     });
-//   }
+// app.post('/api/register', async (req, res) => {
+//   // const response = await axios.get('https://smsc.ru/sys/send.php', {
+//   const response = await axios.get('https://sms.ru/sms/send', {
+//     params: {
+//       api_id: process.env.API_KEY_SMSRU,
+//       to: '79618833873',
+//       sender: 'Сервис запишись',
+//       msg: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
+//       // login: process.env.API_LOGIN_SMSC,
+//       // psw: process.env.API_PASSWORD_SMSC,
+//       // phones: '79618833873',
+//       // sender: 'Сервис запишись',
+//       // mes: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
+//     },
+//   });
+//   console.log(response);
 // });
-
-// app.get('/get-all-dates', async (req, res) => {
-//   try {
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({
-//       error: 'Items not found',
-//     });
-//   }
-// });
-
-app.post('/api/register', async (req, res) => {
-  try {
-    console.log(req);
-    console.log(res);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.post('/register', async (req, res) => {
-  console.log('req');
-  const response = await axios.get('https://smsc.ru/sys/send.php', {
-    params: {
-      login: process.env.API_LOGIN_SMSC,
-      psw: process.env.API_PASSWORD_SMSC,
-      phones: '79618833873',
-      sender: 'Сервис запишись',
-      mes: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
-    },
-  });
-  console.log(response);
-});
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
   console.error('Ошибка запуска сервера:', error);
