@@ -2,7 +2,10 @@ import express, { Express, Response, Request, ErrorRequestHandler } from 'expres
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import cors from 'cors';
+// import redis from 'redis';
 import authenticationRoutes from './routes/authenticationRoutes.js';
+import { Server } from 'socket.io';
+import { createServer } from 'http';
 /*
   MONGO
   * "username": "rukoleevnikita",
@@ -16,31 +19,15 @@ mongoose
   .catch((err) => console.log('Db error', err));
 
 const app: Express = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 app.get('/', (req: Request, res: Response) => {
   res.send('hello');
 });
 app.use(express.json());
 app.use(cors());
 
-app.use('/api', authenticationRoutes);
-
-// app.post('/api/register', async (req, res) => {
-//   // const response = await axios.get('https://smsc.ru/sys/send.php', {
-//   const response = await axios.get('https://sms.ru/sms/send', {
-//     params: {
-//       api_id: process.env.API_KEY_SMSRU,
-//       to: '79618833873',
-//       sender: 'Сервис запишись',
-//       msg: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
-//       // login: process.env.API_LOGIN_SMSC,
-//       // psw: process.env.API_PASSWORD_SMSC,
-//       // phones: '79618833873',
-//       // sender: 'Сервис запишись',
-//       // mes: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
-//     },
-//   });
-//   console.log(response);
-// });
+app.use('/authentication', authenticationRoutes(io));
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
   console.error('Ошибка запуска сервера:', error);
