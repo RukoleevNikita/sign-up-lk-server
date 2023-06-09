@@ -17,15 +17,18 @@ mongoose
   .connect(`mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`)
   .then(() => console.log('Db is connected'))
   .catch((err) => console.log('Db error', err));
-
 const app: Express = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer);
-app.get('/', (req: Request, res: Response) => {
-  res.send('hello');
-});
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' }));
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
+
+app.get('/', (req, res) => res.send(200));
 
 app.use('/authentication', authenticationRoutes(io));
 
@@ -34,6 +37,6 @@ const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
   res.status(500).json({ error: 'Server does not  started' });
 };
 app.use(errorHandler);
-app.listen(4445, () => {
+httpServer.listen(4445, () => {
   console.log('Server started');
 });

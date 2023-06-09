@@ -14,7 +14,7 @@ const authenticationRoute = (io: any) => {
     authSocket.on('connection', (socket: any) => {
       // client -> server - connection
       const verificationCode = generateVerificationCode();
-      console.log(`клиент подключен к маршруту /authentication, verificationCode клиента ${verificationCode}`);
+      console.log(`SERVER - клиент подключен к маршруту /authentication, verificationCode клиента ${verificationCode}`);
 
       socket.on('phone', (data: any) => {
         // client -> server - phone
