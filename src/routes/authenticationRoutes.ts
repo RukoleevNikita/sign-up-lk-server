@@ -1,3 +1,4 @@
+// import { client } from './../redis/redisAuth';
 import { authentication } from './../controllers/UserController.js';
 import generateVerificationCode from '../utils/generateVerificationCode.js';
 import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
@@ -5,24 +6,18 @@ import express from 'express';
 
 const authenticationRoute = (io: any) => {
   const router = express.Router();
-  router.post('/', (req, res) => {
-    console.log(`Запрос на /authentication`);
+  console.log(`Запрос на /authentication`);
+  const authSocket = io.of('/authentication');
 
-    // создаем новое соединение с сокетом для этого маршрута
-    const authSocket = io.of('/authentication');
-
-    authSocket.on('connection', (socket: any) => {
-      // client -> server - connection
+  authSocket.on('connection', (socket: any) => {
+    // client -> server - connection
+    socket.on('phone', (data: any) => {
       const verificationCode = generateVerificationCode();
-      console.log(`SERVER - клиент подключен к маршруту /authentication, verificationCode клиента ${verificationCode}`);
+      // client -> server - phone
+      // const phoneNumber = checkingCellPhoneNumber(data.number);
+      console.log(`phoneNumber ${data.phone}, verificationCode ${verificationCode}`);
 
-      socket.on('phone', (data: any) => {
-        // client -> server - phone
-        const phoneNumber = checkingCellPhoneNumber(data.number);
-        console.log(`phoneNumber ${phoneNumber}, verificationCode ${verificationCode}`);
-        console.log('логика отправки/звонка сообщения пользователю');
-
-        /*
+      /*
         const response = await axios.get('https://sms.ru/sms/send', {
             //https://smsc.ru/sys/send.php
             params: {
@@ -39,26 +34,33 @@ const authenticationRoute = (io: any) => {
           });
         */
 
-        // если response.statusText === 'OK'
+      // после того как произошла отправка сгенерировного кода пользователю
+      // если response.statusText === 'OK'
+      setTimeout(() => {
         socket.emit('phoneProcessed', { success: true }); // server -> client - phoneProcessed
+      }, 1000);
 
-        socket.on('verificationCode', (data: any) => {
-          // проверка кода от client -> server - verificationCode
-          const { verificationCodeClient } = data;
-          if (verificationCode === verificationCodeClient) {
-            socket.emit('verificationCode', { success: true });
-          }
-        });
-      });
+      socket.on('verificationCode', (data: any) => {
+        // проверка кода от client -> server - verificationCode
+        console.log('data.code ', data.code);
+        console.log('verificationCode ', verificationCode);
+        // const { verificationCodeClient } = data;
+        // if (verificationCode === data.code) {
+        //   console.log(true);
 
-      socket.on('disconnect', () => {
-        console.log('клиент отключен от маршрута /authentication');
+        // socket.emit('verificationCode', { success: true });
+        // }
       });
     });
 
-    res.sendStatus(200);
+    socket.on('disconnect', () => {
+      console.log('клиент отключен от маршрута /authentication');
+    });
   });
 
+  router.post('/', async (req, res) => {
+    res.send({ message: 'aa' });
+  });
   return router;
 };
 

@@ -30,7 +30,7 @@ const io = new Server(httpServer, {
 
 app.get('/', (req, res) => res.send(200));
 
-app.use('/authentication', authenticationRoutes(io));
+app.use('/api/authentication', authenticationRoutes(io));
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
   console.error('Ошибка запуска сервера:', error);
