@@ -1,20 +1,47 @@
+import jwt from 'jsonwebtoken';
 // import bcrypt from 'bcrypt';
-// import UserModel from '../modules/User';
-// import jwt from 'jsonwebtoken';
-import { NextFunction, Response, Request, ErrorRequestHandler } from 'express';
-import { getAsync } from '../redis/redisAuth.js';
-import axios from 'axios';
+import UserModel from '../modules/User.js';
+import MongoDBManager from './databaseController.js';
 
-export const authentication = async (req: any, res: any) => {
+export const authentication = async (number: any, code: number) => {
   try {
-    // getAsync('verificationCode')
-    //     // Обработка переменной
-    //     console.log('nextReq', verificationCode); // Вывод переменной в консоль или делайте с ней что-то еще
-    //     res.send('Variable processed'); // Отправка ответа клиенту
-    // })
-    //
-    // number check (validation)
-    // const errors = validationResult(req);
-    // if(!errors.isEmpty()) return res.status(400).json(errors.array());
-  } catch (error) {}
+    const dbManager = new MongoDBManager(
+      `mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`
+    );
+    await dbManager.connect();
+    const registeredUser = dbManager.findOne('users', { phoneNumber: number });
+    // const registeredUser = await UserModel.findOne({
+    //   phoneNumber: number,
+    // });
+    if (!registeredUser) {
+      const token = jwt.sign(
+        {
+          id: code,
+        },
+        'asdkNJqw23Ni_wn23nsk',
+        {
+          expiresIn: '30d',
+        }
+      );
+      const doc = new UserModel({
+        phoneNumber: number,
+        token,
+      });
+      const newUser = await doc.save();
+      const { phoneNumber } = newUser;
+      // написать проверку если с базой что то пошло не так
+      return { msg: `пользователь добавлен в базу ${phoneNumber} `, token };
+    } else {
+      const user = await UserModel.findOne({
+        phoneNumber: number,
+      });
+      if (!user) {
+        return { msg: `что-то пошло не так 44-line`, success: false };
+      }
+      const { phoneNumber, token } = user;
+      return { msg: `авторизация с номером ${phoneNumber}`, token: token };
+    }
+  } catch (error) {
+    console.log('authentication 39-line ', error);
+  }
 };

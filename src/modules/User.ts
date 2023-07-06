@@ -11,6 +11,11 @@ const UserShema = new mongoose.Schema({
     unique: true,
     require: true,
   },
+  token: {
+    type: String,
+    require: true,
+    unique: true,
+  },
 });
 
 export default mongoose.model('User', UserShema);

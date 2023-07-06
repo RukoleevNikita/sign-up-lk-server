@@ -1,22 +1,19 @@
 // import { client } from './../redis/redisAuth';
-import { authentication } from './../controllers/UserController.js';
+// import { authentication } from './../controllers/UserController.js';
 import generateVerificationCode from '../utils/generateVerificationCode.js';
 import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
 import express from 'express';
 
-const authenticationRoute = (io: any) => {
+export const authenticationRoute = (io: any, authentication: any) => {
   const router = express.Router();
-  console.log(`Запрос на /authentication`);
   const authSocket = io.of('/authentication');
 
   authSocket.on('connection', (socket: any) => {
     // client -> server - connection
     socket.on('phone', (data: any) => {
-      const verificationCode = generateVerificationCode();
+      const verificationCode: number = generateVerificationCode();
       // client -> server - phone
-      // const phoneNumber = checkingCellPhoneNumber(data.number);
-      console.log(`phoneNumber ${data.phone}, verificationCode ${verificationCode}`);
-
+      const phoneNumber = checkingCellPhoneNumber(data.phone);
       /*
         const response = await axios.get('https://sms.ru/sms/send', {
             //https://smsc.ru/sys/send.php
@@ -32,24 +29,31 @@ const authenticationRoute = (io: any) => {
               // mes: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
             },
           });
-        */
+      */
 
       // после того как произошла отправка сгенерировного кода пользователю
       // если response.statusText === 'OK'
       setTimeout(() => {
-        socket.emit('phoneProcessed', { success: true }); // server -> client - phoneProcessed
+        socket.emit('phoneProcessed', { success: true });
       }, 1000);
+      console.log(verificationCode);
 
+      // переписать, возвращать на клиент ошшибку
       socket.on('verificationCode', (data: any) => {
         // проверка кода от client -> server - verificationCode
-        console.log('data.code ', data.code);
-        console.log('verificationCode ', verificationCode);
-        // const { verificationCodeClient } = data;
-        // if (verificationCode === data.code) {
-        //   console.log(true);
-
-        // socket.emit('verificationCode', { success: true });
-        // }
+        if (Number(verificationCode) !== Number(data.code)) {
+          // обработка ошибки с отправкой на клиент
+          console.log('введен не верный код');
+          // return res.status(400).
+        } else {
+          socket.emit('verificationCode', { success: true });
+          authentication(phoneNumber, verificationCode * 4, () => {
+            // тут выполняеться логика после функции UserController
+          }).then((res: any) => {
+            // console.log('routes', res);
+            socket.emit('authToken', { success: true, token: res });
+          });
+        }
       });
     });
 
@@ -58,15 +62,10 @@ const authenticationRoute = (io: any) => {
     });
   });
 
-  router.post('/', async (req, res) => {
-    res.send({ message: 'aa' });
-  });
+  // router.post('/', async (req, res) => {
+  //   res.send({ message: 'aa' });
+  // });
   return router;
 };
 
-// const authenticationRoute = express.Router();
-
-// authenticationRoute.post('/authentication', phoneNumberVerification);
-// authenticationRoute.post('/authentication/verification', authentication);
-
-export default authenticationRoute;
+// export default authenticationRoute;
