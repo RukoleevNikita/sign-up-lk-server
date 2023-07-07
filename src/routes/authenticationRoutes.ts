@@ -50,7 +50,7 @@ export const authenticationRoute = (io: any, authentication: any) => {
           authentication(phoneNumber, verificationCode * 4, () => {
             // тут выполняеться логика после функции UserController
           }).then((res: any) => {
-            // console.log('routes', res);
+            console.log('routes', res);
             socket.emit('authToken', { success: true, token: res });
           });
         }
