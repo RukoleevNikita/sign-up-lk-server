@@ -19,7 +19,10 @@ import MongoDBManager from './controllers/databaseController.js';
 //   .connect(`mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`)
 //   .then(() => console.log('Db is connected'))
 //   .catch((err) => console.log('Db error', err));
-
+const dbManager = new MongoDBManager(
+  `mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`
+);
+dbManager.connect();
 const app: Express = express();
 app.use(express.json());
 app.use(cors({ origin: '*' }));
@@ -37,7 +40,7 @@ app.get('/', (req, res) => {
   res.send(200);
 });
 
-app.use('/api/authentication', authenticationRoute(io, UserController.authentication));
+app.use('/api/authentication', authenticationRoute(io, UserController.authentication, dbManager));
 // app.use('/protected', );
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {

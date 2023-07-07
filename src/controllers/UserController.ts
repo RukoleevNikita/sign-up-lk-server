@@ -3,17 +3,10 @@ import jwt from 'jsonwebtoken';
 import UserModel from '../modules/User.js';
 import MongoDBManager from './databaseController.js';
 
-export const authentication = async (number: any, code: number) => {
+export const authentication = async (number: any, code: number, dbManager: any) => {
   try {
-    const dbManager = new MongoDBManager(
-      `mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`
-    );
-    await dbManager.connect();
     const registeredUser = await dbManager.findOne('users', { phoneNumber: number });
 
-    // const registeredUser = await UserModel.findOne({
-    //   phoneNumber: number,
-    // });
     if (!registeredUser) {
       const token = jwt.sign(
         {

@@ -4,10 +4,9 @@ import generateVerificationCode from '../utils/generateVerificationCode.js';
 import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
 import express from 'express';
 
-export const authenticationRoute = (io: any, authentication: any) => {
+export const authenticationRoute = (io: any, authentication: any, dbManager: any) => {
   const router = express.Router();
   const authSocket = io.of('/authentication');
-
   authSocket.on('connection', (socket: any) => {
     // client -> server - connection
     socket.on('phone', (data: any) => {
@@ -47,7 +46,7 @@ export const authenticationRoute = (io: any, authentication: any) => {
           // return res.status(400).
         } else {
           socket.emit('verificationCode', { success: true });
-          authentication(phoneNumber, verificationCode * 4, () => {
+          authentication(phoneNumber, verificationCode * 4, dbManager, () => {
             // тут выполняеться логика после функции UserController
           }).then((res: any) => {
             console.log('routes', res);
