@@ -43,15 +43,15 @@ class MongoDBManager {
   //     }
   //   }
 
-  //   async insertOne<T extends DatabaseDocument>(collectionName: string, document: T): Promise<string | undefined> {
-  //     try {
-  //       const Model = model<T>(collectionName, new Schema({}));
-  //       const result = await Model.create(document);
-  //       return result._id.toString();
-  //     } catch (error) {
-  //       console.error('Error inserting document into MongoDB:', error);
-  //     }
-  //   }
+  async insertOne<T extends DatabaseDocument>(collectionName: string, document: T): Promise<string | undefined> {
+    try {
+      const Model = model<T>(collectionName, new Schema({}));
+      const result = await Model.create(document);
+      return result._id.toString();
+    } catch (error) {
+      console.error('Error inserting document into MongoDB:', error);
+    }
+  }
 
   async findOne<T extends DatabaseDocument>(collectionName: string, query: object): Promise<T | null> {
     try {

@@ -9,7 +9,8 @@ export const authentication = async (number: any, code: number) => {
       `mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`
     );
     await dbManager.connect();
-    const registeredUser = dbManager.findOne('users', { phoneNumber: number });
+    const registeredUser = await dbManager.findOne('users', { phoneNumber: number });
+
     // const registeredUser = await UserModel.findOne({
     //   phoneNumber: number,
     // });
