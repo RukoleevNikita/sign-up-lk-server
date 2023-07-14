@@ -1,26 +1,24 @@
 import {
   connect,
-  //   disconnect,
-  model,
   set,
+  disconnect,
+  model,
   Model,
   Document,
   Schema,
-  //   UpdateWriteOpResult,
-  //   DeleteWriteOpResultObject,
+  UpdateWriteOpResult,
+  // DeleteWriteOpResultObject,
 } from 'mongoose';
-
-interface DatabaseDocument extends Document {
-  [key: string]: any;
-}
+import { UserModel, UserDocument } from '../modules/User.js';
 
 class MongoDBManager {
   private readonly databaseUrl: string;
-  private client: Model<DatabaseDocument> | null;
+  private model: Model<UserDocument> | null;
 
   constructor(databaseUrl: string) {
     this.databaseUrl = databaseUrl;
-    this.client = null;
+    // this.model = model<DatabaseDocument>('users', new Schema({}));
+    this.model = null;
   }
 
   async connect(): Promise<void> {
@@ -34,54 +32,70 @@ class MongoDBManager {
     }
   }
 
-  //   async disconnect(): Promise<void> {
-  //     try {
-  //       await disconnect();
-  //       console.log('Disconnected from MongoDB');
-  //     } catch (error) {
-  //       console.error('Error disconnecting from MongoDB:', error);
-  //     }
-  //   }
-
-  async insertOne<T extends DatabaseDocument>(collectionName: string, document: T): Promise<string | undefined> {
+  async disconnect(): Promise<void> {
     try {
-      const Model = model<T>(collectionName, new Schema({}));
-      const result = await Model.create(document);
-      return result._id.toString();
+      await disconnect();
+      console.log('Disconnected from MongoDB');
+    } catch (error) {
+      console.error('Error disconnecting from MongoDB:', error);
+    }
+  }
+
+  async insertOne<T extends Document>(collectionName: string, document: T): Promise<object | undefined> {
+    try {
+      this.model = this.getModel(collectionName);
+      return this.model ? await this.model.create(document) : undefined;
     } catch (error) {
       console.error('Error inserting document into MongoDB:', error);
     }
   }
 
-  async findOne<T extends DatabaseDocument>(collectionName: string, query: object): Promise<T | null> {
+  async findOne<T extends Document>(collectionName: string, query: object): Promise<T | null> {
     try {
-      const Model = model<T>(collectionName, new Schema({}));
-      return await Model.findOne(query);
+      this.model = this.getModel(collectionName);
+      return (await this.model?.findOne(query)) || null;
     } catch (error) {
       console.error('Error finding document in MongoDB:', error);
     }
     return null;
   }
 
-  //   async updateOne<T extends DatabaseDocument>(collectionName: string, query: object, update: object): Promise<number | undefined> {
-  //     try {
-  //       const Model = model<T>(collectionName, new Schema({}));
-  //       const result: UpdateWriteOpResult = await Model.updateOne(query, update);
-  //       return result.nModified;
-  //     } catch (error) {
-  //       console.error('Error updating document in MongoDB:', error);
-  //     }
+  // async updateOne<T extends DatabaseDocument>(
+  //   collectionName: string,
+  //   query: object,
+  //   update: object
+  // ): Promise<number | undefined> {
+  //   try {
+  //     const Model = this.getModel(collectionName);
+  //     const result: UpdateWriteOpResult = await Model.updateOne(query, update);
+  //     return result.nModified;
+  //   } catch (error) {
+  //     console.error('Error updating document in MongoDB:', error);
   //   }
+  // }
 
-  //   async deleteOne<T extends DatabaseDocument>(collectionName: string, query: object): Promise<number | undefined> {
-  //     try {
-  //       const Model = model<T>(collectionName, new Schema({}));
-  //       const result: DeleteWriteOpResultObject['result'] = await Model.deleteOne(query);
-  //       return result.n;
-  //     } catch (error) {
-  //       console.error('Error deleting document in MongoDB:', error);
-  //     }
+  // async deleteOne<T extends DatabaseDocument>(collectionName: string, query: object): Promise<number | undefined> {
+  //   try {
+  //     const Model = this.getModel(collectionName);
+  //     const result: DeleteWriteOpResultObject['result'] = await Model.deleteOne(query);
+  //     return result.n;
+  //   } catch (error) {
+  //     console.error('Error deleting document in MongoDB:', error);
   //   }
+  // }
+
+  private getModel(collectionName: string): Model<UserDocument> | null {
+    switch (collectionName) {
+      case 'users': // if (x === 'value1')
+        return UserModel;
+      default:
+        return null;
+    }
+    // if (collectionName === 'users') {
+    //   return this.userModel as Model<DatabaseDocument>;
+    // }
+    // return model<DatabaseDocument>(collectionName, new Schema({}));
+  }
 }
 
 export default MongoDBManager;

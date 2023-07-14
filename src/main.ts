@@ -8,6 +8,7 @@ import { Server } from 'socket.io';
 import { createServer } from 'http';
 import { UserController } from './controllers/index.js';
 import MongoDBManager from './controllers/databaseController.js';
+import isAuthenticated from './utils/isAuthenticated.js';
 /*
   MONGO
   * "username": "rukoleevnikita",
@@ -34,14 +35,10 @@ const io = new Server(httpServer, {
   },
 });
 
-app.get('/', (req, res) => {
-  console.log(123);
-
-  res.send(200);
-});
+app.get('/', (req, res) => res.send(200));
 
 app.use('/api/authentication', authenticationRoute(io, UserController.authentication, dbManager));
-// app.use('/protected', );
+// app.use('/main', isAuthenticated, protectedRouter(io));
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
   console.error('Ошибка запуска сервера:', error);

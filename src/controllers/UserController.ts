@@ -1,13 +1,10 @@
 import jwt from 'jsonwebtoken';
 // import bcrypt from 'bcrypt';
-import UserModel from '../modules/User.js';
-import MongoDBManager from './databaseController.js';
 
-export const authentication = async (number: any, code: number, dbManager: any) => {
+export const authentication = async (number: string, code: number, dbManager: any) => {
   try {
-    const registeredUser = await dbManager.findOne('users', { phoneNumber: number });
-
-    if (!registeredUser) {
+    const user = await dbManager.findOne('users', { phoneNumber: number });
+    if (!user) {
       const token = jwt.sign(
         {
           id: code,
@@ -17,23 +14,11 @@ export const authentication = async (number: any, code: number, dbManager: any) 
           expiresIn: '30d',
         }
       );
-      const doc = new UserModel({
-        phoneNumber: number,
-        token,
-      });
-      const newUser = await doc.save();
-      const { phoneNumber } = newUser;
+      const document = await dbManager.insertOne('users', { phoneNumber: number, token });
       // написать проверку если с базой что то пошло не так
-      return { msg: `пользователь добавлен в базу ${phoneNumber} `, token };
+      return { msg: `пользователь добавлен в бд ${document.phoneNumber} `, token: document.token };
     } else {
-      const user = await UserModel.findOne({
-        phoneNumber: number,
-      });
-      if (!user) {
-        return { msg: `что-то пошло не так 44-line`, success: false };
-      }
-      const { phoneNumber, token } = user;
-      return { msg: `авторизация с номером ${phoneNumber}`, token: token };
+      return { msg: `авторизация с номером ${user.phoneNumber}`, token: user.token };
     }
   } catch (error) {
     console.log('authentication 39-line ', error);
