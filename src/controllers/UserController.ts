@@ -15,9 +15,11 @@ export const authentication = async (number: string, code: number, dbManager: an
         }
       );
       const document = await dbManager.insertOne('users', { phoneNumber: number, token });
+      // поменять на id и token
       // написать проверку если с базой что то пошло не так
       return { msg: `пользователь добавлен в бд ${document.phoneNumber} `, token: document.token };
     } else {
+      // поменять на id и token
       return { msg: `авторизация с номером ${user.phoneNumber}`, token: user.token };
     }
   } catch (error) {

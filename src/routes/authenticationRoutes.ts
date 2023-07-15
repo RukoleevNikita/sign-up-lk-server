@@ -33,7 +33,7 @@ export const authenticationRoute = (io: any, authentication: any, dbManager: any
       // после того как произошла отправка сгенерировного кода пользователю
       // если response.statusText === 'OK'
       setTimeout(() => {
-        socket.emit('phoneProcessed', { success: true });
+        socket.emit('authenticationProcess', { success: true });
       }, 1000);
       console.log(verificationCode);
 
@@ -48,9 +48,10 @@ export const authenticationRoute = (io: any, authentication: any, dbManager: any
           socket.emit('verificationCode', { success: true });
           authentication(phoneNumber, verificationCode * 4, dbManager, () => {
             // тут выполняеться логика после функции UserController
-          }).then((res: any) => {
+          }).then((res: object) => {
             console.log('routes ', res);
-            socket.emit('authToken ', { success: true, token: res });
+            // success поменять на id и token
+            socket.emit('authToken', { success: true, token: res });
           });
         }
       });
@@ -61,9 +62,9 @@ export const authenticationRoute = (io: any, authentication: any, dbManager: any
     });
   });
 
-  // router.post('/', async (req, res) => {
-  //   res.send({ message: 'aa' });
-  // });
+  router.post('/', async (req, res) => {
+    res.send({ message: 'connection socket' });
+  });
   return router;
 };
 
