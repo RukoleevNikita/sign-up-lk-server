@@ -1,7 +1,6 @@
 import { NextFunction, Response, Request, ErrorRequestHandler } from 'express';
 import generateVerificationCode from '../utils/generateVerificationCode.js';
 import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
-import { setAsync, client } from '../redis/redisAuth.js';
 import { errorData } from '../utils/errorData.js';
 import axios from 'axios';
 
@@ -49,19 +48,6 @@ export const phoneNumberVerification = async (req: Request, res: Response, next:
     // const textResponse = errorData[response.data.splice(0, 3)];
     /* установка хэша для сгенерированого кода */
     // if (await client.connect) {
-    client.connect().then(() => {
-      setAsync('verificationCode', verificationCode)
-        .then(() => {
-          console.log(verificationCode);
-          // next(textResponse);
-          next(response);
-        })
-        .catch((error: ErrorRequestHandler) => {
-          console.error('Error saving variable to Redis:', error);
-          res.status(500).send('Error saving variable to Redis');
-        });
-    });
-
     // }
   } else {
     next('error');

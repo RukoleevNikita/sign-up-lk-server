@@ -1,14 +1,15 @@
 import express, { Express, Response, Request, ErrorRequestHandler } from 'express';
 import 'dotenv/config';
-import mongoose from 'mongoose';
 import cors from 'cors';
 // import redis from 'redis';
 import { authenticationRoute } from './routes/authenticationRoutes.js';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import { UserController } from './controllers/index.js';
-import MongoDBManager from './controllers/databaseController.js';
+import { userController } from './controllers/index.js';
+import MongoDBManager from './service/databaseService.js';
 import isAuthenticated from './utils/isAuthenticated.js';
+import authorizationControlRoutes from './routes/authorizationControlRoutes.js';
+import swaggerDocs from './swagger/swagger.js';
 /*
   MONGO
   * "username": "rukoleevnikita",
@@ -20,6 +21,7 @@ import isAuthenticated from './utils/isAuthenticated.js';
 //   .connect(`mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`)
 //   .then(() => console.log('Db is connected'))
 //   .catch((err) => console.log('Db error', err));
+
 const dbManager = new MongoDBManager(
   `mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`
 );
@@ -36,8 +38,12 @@ const io = new Server(httpServer, {
 });
 
 app.get('/', (req, res) => res.send(200));
-
-app.use('/api/authentication', authenticationRoute(io, UserController.authentication, dbManager));
+// app.use('/api/authentication', authenticationRoute(io, userController.authentication, dbManager));
+app.use(
+  '/api/authentication',
+  authenticationRoute(io, userController.authentication, dbManager.findOne, dbManager.insertOne)
+);
+app.use('/authorization-control', authorizationControlRoutes(dbManager.deleteOne, dbManager.findOne)); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
@@ -46,5 +52,6 @@ const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
 };
 app.use(errorHandler);
 httpServer.listen(4445, () => {
+  swaggerDocs(app, 4445);
   console.log('Server started');
 });

@@ -1,4 +1,4 @@
-import MongoDBManager from '../controllers/databaseController.js';
+import MongoDBManager from '../service/databaseService.js';
 
 export default (req: any, res: any, next: any) => {
   return next();

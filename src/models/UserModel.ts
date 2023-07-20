@@ -1,11 +1,10 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema, Document, Model } from 'mongoose';
 
 export interface UserDocument extends Document {
   name?: string;
   phoneNumber: string;
-  token: string;
+  // token: string;
 }
-
 const UserSchema: Schema<UserDocument> = new Schema<UserDocument>({
   name: {
     type: String,
@@ -17,11 +16,11 @@ const UserSchema: Schema<UserDocument> = new Schema<UserDocument>({
     unique: true,
     required: true,
   },
-  token: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+  // token: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  // },
 });
 
-export const UserModel = model<UserDocument>('User', UserSchema);
+export const UserModel = model<UserDocument>('user', UserSchema);

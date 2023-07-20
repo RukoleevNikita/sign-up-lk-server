@@ -4,7 +4,7 @@ import generateVerificationCode from '../utils/generateVerificationCode.js';
 import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
 import express from 'express';
 
-export const authenticationRoute = (io: any, authentication: any, dbManager: any) => {
+export const authenticationRoute = (io: any, authentication: any, findOne: any, insertOne: any) => {
   const router = express.Router();
   const authSocket = io.of('/authentication');
   authSocket.on('connection', (socket: any) => {
@@ -46,12 +46,13 @@ export const authenticationRoute = (io: any, authentication: any, dbManager: any
           // return res.status(400).
         } else {
           socket.emit('verificationCode', { success: true });
-          authentication(phoneNumber, verificationCode * 4, dbManager, () => {
+          authentication(phoneNumber, verificationCode * 4, findOne, insertOne, () => {
             // тут выполняеться логика после функции UserController
           }).then((res: object) => {
             console.log('routes ', res);
-            // success поменять на id и token
-            socket.emit('authToken', { success: true, token: res });
+            res === null
+              ? socket.emit('authToken', { success: false, userData: res }) // userData: null
+              : socket.emit('authToken', { success: true, userData: res }); // userData: {id: '', token: ''}
           });
         }
       });
