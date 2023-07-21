@@ -1,20 +1,45 @@
 import { model, Schema, Document, Model } from 'mongoose';
 
 export interface UserDocument extends Document {
-  name?: string;
   phoneNumber: string;
+  createdAt: Date;
+  firstName?: string;
+  lastName?: string;
+  patronymic?: string;
+  mail?: string;
+  typeUser?: number[];
   // token: string;
 }
 const UserSchema: Schema<UserDocument> = new Schema<UserDocument>({
-  name: {
-    type: String,
-    required: false,
-  },
   phoneNumber: {
     type: String,
     index: true,
     unique: true,
     required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  firstName: {
+    type: String,
+    required: false,
+  },
+  lastName: {
+    type: String,
+    required: false,
+  },
+  patronymic: {
+    type: String,
+    required: false,
+  },
+  mail: {
+    type: String,
+    required: false,
+  },
+  typeUser: {
+    type: [Number],
+    required: false,
   },
   // token: {
   //   type: String,

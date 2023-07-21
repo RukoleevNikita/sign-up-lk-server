@@ -9,7 +9,7 @@ import {
   UpdateWriteOpResult,
   // DeleteWriteOpResultObject,
 } from 'mongoose';
-import { UserModel, UserDocument, SessionModel, SessionDocument } from '../models/index.js';
+import { UserModel, UserDocument, SessionModel, SessionDocument, WidgetModel } from '../models/index.js';
 // import { getModel } from '../models/getModels.js';
 
 class MongoDBManager {
@@ -51,6 +51,8 @@ class MongoDBManager {
           return (await UserModel.create(document)) || undefined;
         case 'session':
           return (await SessionModel.create(document)) || undefined;
+        case 'widgets':
+          return (await WidgetModel.create(document)) || undefined;
         default:
           return undefined;
       }
@@ -70,6 +72,8 @@ class MongoDBManager {
           return (await UserModel.findOne(query)) || null;
         case 'session':
           return (await SessionModel.findOne(query)) || null;
+        case 'widgets':
+          return (await WidgetModel.findOne(query)) || null;
         default:
           return null;
       }
@@ -88,7 +92,7 @@ class MongoDBManager {
         case 'users':
           return (await UserModel.findOneAndDelete({ id: query })) ?? undefined;
         case 'session':
-          return (await SessionModel.findOneAndDelete({ userId: query })) ?? undefined; // работает возвращает { удаленный объект }
+          return (await SessionModel.findOneAndDelete({ userId: query })) ?? undefined;
         default:
           return undefined;
       }

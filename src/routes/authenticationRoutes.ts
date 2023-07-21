@@ -42,6 +42,7 @@ export const authenticationRoute = (io: any, authentication: any, findOne: any, 
         // проверка кода от client -> server - verificationCode
         if (Number(verificationCode) !== Number(data.code)) {
           // обработка ошибки с отправкой на клиент
+          socket.emit('verificationCode', { success: false });
           console.log('введен не верный код');
           // return res.status(400).
         } else {

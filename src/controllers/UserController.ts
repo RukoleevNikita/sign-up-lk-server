@@ -1,22 +1,25 @@
 import generateUserToken from '../utils/generateUserToken.js';
+import getWidgets from '../utils/getWidgets.js';
 
-export const authentication = async (number: string, code: number, findOne: any, insertOne: any, deleteOne: any) => {
+export const authentication = async (number: string, code: number, findOne: any, insertOne: any) => {
   try {
     const user = await findOne('users', { phoneNumber: number });
-
     if (!user) {
       const token = generateUserToken(code);
       const document = await insertOne('users', { phoneNumber: number });
-      document
-        ? await insertOne('session', { userId: document._id.toString(), token: token })
-        : console.error('пользователь не добавлен в БД');
+      if (document) {
+        await insertOne('session', { userId: document._id.toString(), token: token });
+        await insertOne('widgets', { userId: document._id.toString(), widgets: getWidgets() });
+      } else {
+        console.error('пользователь не добавлен в БД');
+      }
 
       return document ? { id: document._id.toString(), token: token } : null;
     } else {
       const token = generateUserToken(code);
       await insertOne('session', { userId: user._id.toString(), token: token });
-
-      return { id: user._id.toString(), token: token };
+      const widgets = await findOne('widgets', { userId: user._id.toString() });
+      return { id: user._id.toString(), token: token, widgets: widgets.widgets };
     }
   } catch (error) {
     console.log('authentication 39-line ', error);
