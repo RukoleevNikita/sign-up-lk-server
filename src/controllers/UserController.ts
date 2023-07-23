@@ -36,7 +36,7 @@ export const checkAuthorization = async (req: any, res: any, findOne: any) => {
       });
     } else {
       res.status(200).json({
-        succses: true,
+        success: true,
         msg: { id: session.userId, token: session.token },
       });
     }
@@ -58,7 +58,7 @@ export const deleteAuthorization = async (req: any, res: any, deleteOne: any) =>
       });
     } else {
       res.status(200).json({
-        succses: true,
+        success: true,
       });
     }
   } catch (error) {
