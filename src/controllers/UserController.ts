@@ -28,7 +28,7 @@ export const authentication = async (number: string, code: number, findOne: any,
 
 export const checkAuthorization = async (req: any, res: any, findOne: any) => {
   try {
-    const session = await findOne('session', { userId: req.body.params.id });
+    const session = await findOne('session', { userId: req.body.id });
     if (session === null) {
       res.status(404).json({
         success: false,
@@ -49,10 +49,11 @@ export const checkAuthorization = async (req: any, res: any, findOne: any) => {
 };
 
 export const deleteAuthorization = async (req: any, res: any, deleteOne: any) => {
+  // добавить дисконект от бд
   try {
-    if ((await deleteOne('session', req.body.params.id)) === undefined) {
+    if ((await deleteOne('session', req.body.id)) === undefined) {
       res.status(404).json({
-        succses: false,
+        success: false,
         msg: 'Сессии с таким id не существует',
       });
     } else {
@@ -61,7 +62,6 @@ export const deleteAuthorization = async (req: any, res: any, deleteOne: any) =>
       });
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       error: error,
     });

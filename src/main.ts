@@ -43,7 +43,7 @@ app.use(
   '/api/authentication',
   authenticationRoute(io, userController.authentication, dbManager.findOne, dbManager.insertOne)
 );
-app.use('/authorization-control', authorizationControlRoutes(dbManager.deleteOne, dbManager.findOne)); // написать проверку авторизации
+app.use('/api/authorization-control', authorizationControlRoutes(dbManager.deleteOne, dbManager.findOne)); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 
 const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
