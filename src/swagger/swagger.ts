@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { Express, Request, Response } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -25,5 +26,6 @@ function swaggerDocs(app: Express, port: number) {
     res.send(swaggerSpec);
   });
 }
+fs.writeFileSync('swagger.json', JSON.stringify(swaggerSpec, null, 2));
 
 export default swaggerDocs;

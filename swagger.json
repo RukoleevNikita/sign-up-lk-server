@@ -1,0 +1,66 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "REST API Docs",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "delete": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "success": true
+        }
+      }
+    }
+  },
+  "paths": {
+    "api/authorization-control/delete": {
+      "delete": {
+        "tags": [
+          "delete"
+        ],
+        "summary": "запросна удаление авторизации",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/delete"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Сессии с таким id не существует"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

@@ -9,8 +9,7 @@
     "build": "rimraf ./build && npx tsc",
     "start": "npm run build &&  node build/main",
     "lint": "npx eslint ./src",
-    "format": "npx eslint ./src --fix",
-    "generate-swagger": "swagger-jsdoc -d swagger.json -o ./"
+    "format": "npx eslint ./src --fix"
   },
   "repository": {
     "type": "git",
