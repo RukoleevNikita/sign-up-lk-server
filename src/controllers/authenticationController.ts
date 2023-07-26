@@ -1,6 +1,18 @@
 import generateUserToken from '../utils/generateUserToken.js';
 import getWidgets from '../utils/getWidgets.js';
 
+export const sessionVerificationBeforeAuthentication = async (number: string, findOne: any) => {
+  const user = await findOne('users', { phoneNumber: number });
+  if (!user) return false;
+  const session = await findOne('session', { userId: user._id.toString() });
+  if (session) {
+    const widgets = await findOne('widgets', { userId: user._id.toString() });
+    return { id: user._id.toString(), token: session.token, widgets: widgets.widgets };
+  } else {
+    return false;
+  }
+};
+
 export const authentication = async (number: string, code: number, findOne: any, insertOne: any) => {
   try {
     const user = await findOne('users', { phoneNumber: number });
@@ -26,7 +38,7 @@ export const authentication = async (number: string, code: number, findOne: any,
   }
 };
 
-export const checkAuthorization = async (req: any, res: any, findOne: any) => {
+export const checkAuthentication = async (req: any, res: any, findOne: any) => {
   try {
     const session = await findOne('session', { userId: req.body.id });
     if (session === null) {
@@ -48,7 +60,7 @@ export const checkAuthorization = async (req: any, res: any, findOne: any) => {
   }
 };
 
-export const deleteAuthorization = async (req: any, res: any, deleteOne: any) => {
+export const deleteAuthentication = async (req: any, res: any, deleteOne: any) => {
   // добавить дисконект от бд
   try {
     if ((await deleteOne('session', req.body.id)) === undefined) {
@@ -67,3 +79,23 @@ export const deleteAuthorization = async (req: any, res: any, deleteOne: any) =>
     });
   }
 };
+
+// export const setSession = async (req: any, res: any, deleteOne: any) => {
+//   try {
+//     // установка ссеий
+//     if ((await deleteOne('session', req.body.id)) === undefined) {
+//       res.status(404).json({
+//         success: false,
+//         msg: 'Сессии с таким id не существует',
+//       });
+//     } else {
+//       res.status(200).json({
+//         success: true,
+//       });
+//     }
+//   } catch (error) {
+//     res.status(500).json({
+//       error: error,
+//     });
+//   }
+// };
