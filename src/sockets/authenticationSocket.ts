@@ -15,14 +15,23 @@ export const authenticationSocket = (io: any, authenticationController: any, fin
       // client -> server - phone
       const phoneNumber = checkingCellPhoneNumber(data.phone);
       // провекра сессии перед отправкой проверочного кода
-      const sessionVerification = authenticationController.sessionVerificationBeforeAuthentication(
-        phoneNumber,
-        findOne
-      );
-      if (sessionVerification) {
-        socket.emit('verificationSession', { success: true, userData: sessionVerification });
-      }
-      socket.emit('verificationSession', { success: false });
+      authenticationController
+        .sessionVerificationBeforeAuthentication(phoneNumber, findOne)
+        .then((res) => {
+          socket.emit('verificationSession', { success: !!res, userData: res });
+          // console.log('Результат обещания:', { success: !!res, userData: res });
+          // console.log('res.widgets ', res.widgets);
+        })
+        .catch((error) => {
+          console.error('Ошибка при выполнении проверки запущенной сессии:', error);
+        });
+      // console.log('sessionVerification ', sessionVerification);
+
+      // if (sessionVerification) {
+      // console.log('if ', { success: !!sessionVerification, userData: sessionVerification });
+      // socket.emit('verificationSession', { success: !!sessionVerification, userData: sessionVerification });
+      // }
+      // socket.emit('verificationSession', { success: false });
       /* отправка проверочного кода клиенту
         const response = await axios.get('https://sms.ru/sms/send', {
             //https://smsc.ru/sys/send.php
