@@ -32,7 +32,7 @@ const authenticationRoutes = (deleteOne: any, findOne: any) => {
    * @swagger
    * tags:
    *   name: Authorization control
-   *   description: проверить авторизован ли пользователь/удалить авторизацию пользователя
+   *   description: проверить/удалить авторизацию пользователя
    */
 
   /**
@@ -84,7 +84,7 @@ const authenticationRoutes = (deleteOne: any, findOne: any) => {
    * 'api/authorization-control/delete':
    *  delete:
    *     tags: [Authorization control]
-   *     summary: запросна удаление авторизации
+   *     summary: запрос на удаление авторизации
    *     requestBody:
    *       required: true
    *       content:
@@ -106,7 +106,7 @@ const authenticationRoutes = (deleteOne: any, findOne: any) => {
    *       404:
    *         description: Сессии с таким id не существует
    */
-  // delete переименовать в logout
+  //! delete переименовать в logout
   authenticationRoutes.delete('/delete', (req, res) =>
     authenticationController.deleteAuthentication(req, res, deleteOne)
   );

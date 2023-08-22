@@ -11,7 +11,7 @@ const SessionSchema: Schema<SessionDocument> = new Schema<SessionDocument>({
     type: Schema.Types.ObjectId,
     required: true,
     unique: true,
-    ref: 'User',
+    ref: 'user',
   },
   token: {
     type: String,

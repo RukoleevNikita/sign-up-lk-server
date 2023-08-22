@@ -16,7 +16,7 @@ const WidgetSchema: Schema<WidgetDocument> = new Schema<WidgetDocument>({
     type: Schema.Types.ObjectId,
     required: true,
     unique: true,
-    ref: 'User',
+    ref: 'user',
   },
   widgets: [
     {

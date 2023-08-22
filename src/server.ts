@@ -13,7 +13,7 @@ import { authenticationController } from './controllers/index.js';
 import isAuthenticated from './utils/isAuthenticated.js';
 import authenticationRoutes from './routes/authenticationRoutes.js';
 // import { cookieOptions } from './cookieOptions.js';
-import settingsControlRoutes from './routes/settingsRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 /*
   MONGO
@@ -58,6 +58,7 @@ app.use(
   authenticationSocket(io, authenticationController, dbManager.findOne, dbManager.insertOne)
 );
 app.use('/api/authorization-control', authenticationRoutes(dbManager.deleteOne, dbManager.findOne)); // написать проверку авторизации
+app.use('/api/profile', profileRoutes(dbManager.findOne)); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());
 

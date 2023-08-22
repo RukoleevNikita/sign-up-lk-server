@@ -17,12 +17,12 @@ export const authenticationSocket = (io: any, authenticationController: any, fin
       // провекра сессии перед отправкой проверочного кода
       authenticationController
         .sessionVerificationBeforeAuthentication(phoneNumber, findOne)
-        .then((res) => {
+        .then((res: any) => {
           socket.emit('verificationSession', { success: !!res, userData: res });
           // console.log('Результат обещания:', { success: !!res, userData: res });
           // console.log('res.widgets ', res.widgets);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           console.error('Ошибка при выполнении проверки запущенной сессии:', error);
         });
       // console.log('sessionVerification ', sessionVerification);
