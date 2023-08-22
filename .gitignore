@@ -1,5 +1,6 @@
 lib-cov
 *.seed
+*.rtf
 *.log
 *.csv
 *.dat

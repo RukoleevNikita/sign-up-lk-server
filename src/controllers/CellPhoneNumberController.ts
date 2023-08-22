@@ -1,9 +1,15 @@
+import { NextFunction, Response, Request, ErrorRequestHandler } from 'express';
 import generateVerificationCode from '../utils/generateVerificationCode.js';
 import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
 import { errorData } from '../utils/errorData.js';
 import axios from 'axios';
 
-export const phoneNumberVerification = async (req: any, res: any, next: any) => {
+export const phoneNumberVerification = async (req: Request, res: Response, next: NextFunction) => {
+  const verificationCode = generateVerificationCode();
+  const response = {
+    statusText: 'OK',
+  };
+  /*
   const response = await axios.get('https://sms.ru/sms/send', {
     //https://smsc.ru/sys/send.php
     params: {
@@ -18,7 +24,8 @@ export const phoneNumberVerification = async (req: any, res: any, next: any) => 
       // mes: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
     },
   });
-  console.log(response.data.split('\n'));
+  */
+  // console.log(response.data.split('\n'));
   /*
    *
    * 100 - запрос выполнен успешно
@@ -38,8 +45,10 @@ export const phoneNumberVerification = async (req: any, res: any, next: any) => 
   */
 
   if (response.statusText === 'OK') {
-    const textResponse = errorData[response.data.splice(0, 3)];
-    next(textResponse);
+    // const textResponse = errorData[response.data.splice(0, 3)];
+    /* установка хэша для сгенерированого кода */
+    // if (await client.connect) {
+    // }
   } else {
     next('error');
   }

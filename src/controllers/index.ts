@@ -1,2 +1,3 @@
-export * as UserController from './UserController.js';
-export * as phoneNumberVerification from './CellPhoneNumberController.js';
+export * as authenticationController from './authenticationController.js';
+export * as phoneNumberVerification from './cellPhoneNumberController.js';
+export * as profileController from './profileController.js';
