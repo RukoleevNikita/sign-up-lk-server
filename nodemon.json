@@ -2,9 +2,5 @@
     "watch": ["src"],
     "ext": ".ts,.js",
     "ignore": [],
-<<<<<<< HEAD
     "exec": "npx tsx ./src/server.ts"
-=======
-    "exec": "npx tsx ./src/main.ts"
->>>>>>> master
 }
