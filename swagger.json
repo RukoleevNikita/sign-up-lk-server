@@ -34,7 +34,7 @@
           }
         }
       },
-      "Delete session": {
+      "DeleteSession": {
         "type": "object",
         "properties": {
           "success": {
@@ -45,38 +45,312 @@
           "success": true
         }
       },
-      "User settings": {
+      "ServiceItem": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean"
+          "service": {
+            "type": "string",
+            "description": "название специализации",
+            "example": "Маникюр"
           },
+          "basicService": {
+            "type": "string",
+            "description": "название базовой услуги маникюра",
+            "example": "Маникюр c покрытием гель лаком"
+          },
+          "additionalServices": {
+            "type": "array",
+            "description": "дополнительный перечень услуг маникюра",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Аппаратный маникюр",
+              "Классический маникюр",
+              "Японский маникюр",
+              "Пилочный маникюр",
+              "Комбинированный маникюр",
+              "Мужской маникюр",
+              "Наращивание ногтей"
+            ]
+          }
+        }
+      },
+      "SpecializationParametersResponse": {
+        "type": "object",
+        "properties": {
           "msg": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "id польтзователя"
-              },
-              "token": {
-                "type": "string",
-                "description": "token пользователя"
-              }
+            "type": "array",
+            "description": "массив объектов с данными о маникюре.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItem"
             }
           }
         },
         "example": {
-          "succes": "true,",
-          "msg": {
-            "id": "64b299cb140266a6294d2c4e",
-            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f"
+          "msg": [
+            {
+              "service": "Маникюр",
+              "basicService": "Маникюр c покрытием гель лаком",
+              "additionalServices": [
+                "Аппаратный маникюр",
+                "Классический маникюр",
+                "Японский маникюр",
+                "Пилочный маникюр",
+                "Комбинированный маникюр",
+                "Мужской маникюр",
+                "Наращивание ногтей"
+              ]
+            }
+          ]
+        }
+      },
+      "GetSearchServiceSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "activeAccount": {
+            "type": "boolean",
+            "description": "активность пользователя в поисковом сервисе"
+          },
+          "socialNetwork": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "список социальных сетей пользователя"
+          },
+          "workPhoneNumber": {
+            "type": "string",
+            "description": "рабочий номер телефона пользователя"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "имя пользователя"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "фамилия пользователя"
+          },
+          "userServices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "service": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "string"
+                }
+              },
+              "description": "список услуг пользователя"
+            }
+          },
+          "additionalServices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "список дополнительных услуг пользователя"
+          },
+          "address": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "рабочий адрес"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "номер WhatsApp пользователя"
+          },
+          "telegram": {
+            "type": "string",
+            "description": "ник еelegram пользователя"
+          }
+        }
+      },
+      "GetSearchServiceSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id пользователя"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "PostSearchServiceSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "success": true
+        }
+      },
+      "PostSearchServiceSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id пользователя"
+          },
+          "profileData": {
+            "type": "object",
+            "properties": {
+              "activeAccount": {
+                "type": "boolean",
+                "description": "активность пользователя в поисковом сервисе"
+              },
+              "socialNetwork": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "список социальных сетей пользователя"
+              },
+              "workPhoneNumber": {
+                "type": "string",
+                "description": "рабочий номер телефона пользователя"
+              },
+              "firstName": {
+                "type": "string",
+                "description": "имя пользователя"
+              },
+              "lastName": {
+                "type": "string",
+                "description": "фамилия пользователя"
+              },
+              "userServices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "service": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": "список услуг пользователя"
+              },
+              "additionalServices": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "список дополнительных услуг пользователя"
+              },
+              "address": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "адреса пользователя"
+              },
+              "whatsapp": {
+                "type": "string",
+                "description": "номер WhatsApp пользователя"
+              },
+              "telegram": {
+                "type": "string",
+                "description": "ник Telegram пользователя"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "profileData"
+        ]
+      },
+      "UpdateUserDataRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id пользователя"
+          },
+          "profileData": {
+            "type": "object",
+            "properties": {
+              "activeAccount": {
+                "type": "boolean"
+              },
+              "socialNetwork": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "workPhoneNumber": {
+                "type": "string"
+              },
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "userServices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "service": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalServices": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "address": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "whatsapp": {
+                "type": "string"
+              },
+              "telegram": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "profileData"
+        ]
+      },
+      "UpdateUserDataResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
           }
         }
       }
     }
   },
   "paths": {
-    "api/authorization-control/check": {
+    "api/authorization-control/": {
       "get": {
         "tags": [
           "Authorization control"
@@ -118,12 +392,12 @@
         }
       }
     },
-    "api/authorization-control/delete": {
+    "/api/authorization-control/": {
       "delete": {
         "tags": [
           "Authorization control"
         ],
-        "summary": "запросна удаление авторизации",
+        "summary": "запрос на удаление авторизации",
         "requestBody": {
           "required": true,
           "content": {
@@ -144,11 +418,11 @@
         },
         "responses": {
           "200": {
-            "description": "success",
+            "description": "Успешное удаление",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Delete session"
+                  "$ref": "#/components/schemas/DeleteSession"
                 }
               }
             }
@@ -159,44 +433,146 @@
         }
       }
     },
-    "api/user-settings": {
-      "post": {
+    "/api/get-params": {
+      "get": {
         "tags": [
-          "Settings control"
+          "Request for specialization parameters"
         ],
-        "summary": "запрос к бд для проверки авторизации",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "id"
+        "summary": "получить параметры при выборе специализации",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "numbers",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "enum": [
+                  0,
+                  1,
+                  2
                 ]
               }
             },
-            "description": "id пользователя"
+            "style": "form",
+            "explode": false,
+            "description": "массив цифр где 0-маникюр, 1-педикюр, 2-визажист",
+            "example": [
+              0,
+              1,
+              2
+            ]
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "success",
+            "description": "успешный запрос",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User settings"
+                  "$ref": "#/components/schemas/SpecializationParametersResponse"
                 }
               }
             }
           },
           "404": {
-            "description": "Не удалось проверить авторизацию пользователя"
+            "description": "не удалось получить параметры"
+          }
+        }
+      }
+    },
+    "/api/settings/search-service": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "gолучение данных пользователя по ID",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id пользователя"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "успешный запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSearchServiceSettingsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "пользователь с указанным id не найден"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "добавление данных пользователя",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostSearchServiceSettingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "успешное добавление данных пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostSearchServiceSettingsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "не удалось добавить данные пользователя"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "обновление данных пользователя",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDataRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "успешное обновление данных",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserDataResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "пользователь с указанным id не найден"
           }
         }
       }
@@ -205,11 +581,15 @@
   "tags": [
     {
       "name": "Authorization control",
-      "description": "проверить авторизован ли пользователь/удалить авторизацию пользователя"
+      "description": "проверить/удалить авторизацию пользователя"
     },
     {
-      "name": "Settings control",
-      "description": "управление настройками пользователя"
+      "name": "Request for specialization parameters",
+      "description": "запрос параметров при выборе специализации"
+    },
+    {
+      "name": "Settings",
+      "description": "данные пользователя"
     }
   ]
 }

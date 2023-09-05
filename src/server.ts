@@ -11,9 +11,9 @@ import MongoDBManager from './service/databaseService.js';
 import { authenticationSocket } from './sockets/authenticationSocket.js';
 import { authenticationController } from './controllers/index.js';
 import isAuthenticated from './utils/isAuthenticated.js';
-import authenticationRoutes from './routes/authenticationRoutes.js';
+// import authenticationRoutes from './routes/authenticationRoutes.js';
 // import { cookieOptions } from './cookieOptions.js';
-import profileRoutes from './routes/profileRoutes.js';
+import { profileRoutes, settingsRoutes, authenticationRoutes, paramsRoutes } from './routes/index.js';
 
 /*
   MONGO
@@ -58,7 +58,8 @@ app.use(
   authenticationSocket(io, authenticationController, dbManager.findOne, dbManager.insertOne)
 );
 app.use('/api/authorization-control', authenticationRoutes(dbManager.deleteOne, dbManager.findOne)); // написать проверку авторизации
-app.use('/api/profile', profileRoutes(dbManager.findOne)); // написать проверку авторизации
+app.use('/api/settings', settingsRoutes(dbManager.findOne)); // написать проверку авторизации
+app.use('/api/get-params', paramsRoutes(dbManager.findOne)); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());
 
