@@ -1,7 +1,7 @@
 import express from 'express';
 import { searchServiceSettingsController } from '../controllers/index.js';
 
-const settingsRoutes = (findOne: any) => {
+const settingsRoutes = (findOne: any, insertOne: any, updateOne: any) => {
   const settingsRoutes = express.Router();
   /**
    * @swagger
@@ -62,11 +62,11 @@ const settingsRoutes = (findOne: any) => {
    *     GetSearchServiceSettingsRequest:
    *       type: object
    *       properties:
-   *         id:
+   *         userId:
    *           type: string
    *           description: id пользователя
    *       required:
-   *         - id
+   *         - userId
    */
 
   /**
@@ -77,7 +77,7 @@ const settingsRoutes = (findOne: any) => {
    *     summary: gолучение данных пользователя по ID
    *     parameters:
    *       - in: query
-   *         name: id
+   *         name: userId
    *         required: true
    *         schema:
    *           type: string
@@ -90,7 +90,17 @@ const settingsRoutes = (findOne: any) => {
    *             schema:
    *               $ref: '#/components/schemas/GetSearchServiceSettingsResponse'
    *       404:
-   *         description: пользователь с указанным id не найден
+   *         description: Пользователь с указанным id не найден
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   description: Успешность запроса
+   *               example:
+   *                 success: false
    */
 
   settingsRoutes.get('/search-service', (req, res) =>
@@ -122,10 +132,10 @@ const settingsRoutes = (findOne: any) => {
    *     PostSearchServiceSettingsRequest:
    *       type: object
    *       properties:
-   *         id:
+   *         userId:
    *           type: string
    *           description: id пользователя
-   *         profileData:
+   *         searchServiceUserData:
    *           type: object
    *           properties:
    *             activeAccount:
@@ -172,8 +182,8 @@ const settingsRoutes = (findOne: any) => {
    *               type: string
    *               description: ник Telegram пользователя
    *       required:
-   *         - id
-   *         - profileData
+   *         - userId
+   *         - searchServiceUserData
    */
 
   /**
@@ -196,10 +206,20 @@ const settingsRoutes = (findOne: any) => {
    *             schema:
    *               $ref: '#/components/schemas/PostSearchServiceSettingsResponse'
    *       404:
-   *         description: не удалось добавить данные пользователя
+   *         description: Не удалось добавить данные пользователя
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   description: Успешность запроса
+   *               example:
+   *                 success: false
    */
 
-  // * profileData:
+  // * searchServiceUserData:
   // * activeAccount: true
   // * socialNetwork: ["instagram/link", "vk/name"]
   // * workPhoneNumber: "89136553626"
@@ -212,7 +232,7 @@ const settingsRoutes = (findOne: any) => {
   // * telegram: "t.me/v_postnova_nails"
 
   settingsRoutes.post('/search-service', (req, res) =>
-    searchServiceSettingsController.saveSearchServiceSettings(req, res, findOne)
+    searchServiceSettingsController.saveSearchServiceSettings(req, res, insertOne)
   );
 
   /**
@@ -222,10 +242,10 @@ const settingsRoutes = (findOne: any) => {
    *     UpdateUserDataRequest:
    *       type: object
    *       properties:
-   *         id:
+   *         userId:
    *           type: string
    *           description: id пользователя
-   *         profileData:
+   *         searchServiceUserData:
    *           type: object
    *           properties:
    *             activeAccount:
@@ -262,8 +282,8 @@ const settingsRoutes = (findOne: any) => {
    *             telegram:
    *               type: string
    *       required:
-   *         - id
-   *         - profileData
+   *         - userId
+   *         - searchServiceUserData
    *     UpdateUserDataResponse:
    *       type: object
    *       properties:
@@ -295,7 +315,7 @@ const settingsRoutes = (findOne: any) => {
    */
 
   settingsRoutes.put('/search-service', (req, res) =>
-    searchServiceSettingsController.updateSearchServiceSettings(req, res, findOne)
+    searchServiceSettingsController.updateSearchServiceSettings(req, res, updateOne, findOne)
   );
 
   return settingsRoutes;

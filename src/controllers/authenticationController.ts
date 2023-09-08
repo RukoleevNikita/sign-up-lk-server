@@ -32,6 +32,7 @@ export const authentication = async (number: string, code: number, findOne: any,
       await insertOne('session', { userId: user._id.toString(), token: token });
       const widgets = await findOne('widgets', { userId: user._id.toString() });
       return { id: user._id.toString(), token: token, widgets: widgets.widgets };
+      return { id: user._id.toString(), token: token, widgets: null };
     }
   } catch (error) {
     console.log('authentication 39-line ', error);

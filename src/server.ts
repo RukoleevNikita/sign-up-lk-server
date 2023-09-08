@@ -58,7 +58,7 @@ app.use(
   authenticationSocket(io, authenticationController, dbManager.findOne, dbManager.insertOne)
 );
 app.use('/api/authorization-control', authenticationRoutes(dbManager.deleteOne, dbManager.findOne)); // написать проверку авторизации
-app.use('/api/settings', settingsRoutes(dbManager.findOne)); // написать проверку авторизации
+app.use('/api/settings', settingsRoutes(dbManager.findOne, dbManager.insertOne, dbManager.updateOne)); // написать проверку авторизации
 app.use('/api/get-params', paramsRoutes(dbManager.findOne)); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());

@@ -173,13 +173,13 @@
       "GetSearchServiceSettingsRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "userId": {
             "type": "string",
             "description": "id пользователя"
           }
         },
         "required": [
-          "id"
+          "userId"
         ]
       },
       "PostSearchServiceSettingsResponse": {
@@ -196,11 +196,11 @@
       "PostSearchServiceSettingsRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "userId": {
             "type": "string",
             "description": "id пользователя"
           },
-          "profileData": {
+          "searchServiceUserData": {
             "type": "object",
             "properties": {
               "activeAccount": {
@@ -267,18 +267,18 @@
           }
         },
         "required": [
-          "id",
-          "profileData"
+          "userId",
+          "searchServiceUserData"
         ]
       },
       "UpdateUserDataRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "userId": {
             "type": "string",
             "description": "id пользователя"
           },
-          "profileData": {
+          "searchServiceUserData": {
             "type": "object",
             "properties": {
               "activeAccount": {
@@ -335,8 +335,8 @@
           }
         },
         "required": [
-          "id",
-          "profileData"
+          "userId",
+          "searchServiceUserData"
         ]
       },
       "UpdateUserDataResponse": {
@@ -490,7 +490,7 @@
         "parameters": [
           {
             "in": "query",
-            "name": "id",
+            "name": "userId",
             "required": true,
             "schema": {
               "type": "string"
@@ -510,7 +510,23 @@
             }
           },
           "404": {
-            "description": "пользователь с указанным id не найден"
+            "description": "Пользователь с указанным id не найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Успешность запроса"
+                    }
+                  },
+                  "example": {
+                    "success": false
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -541,7 +557,23 @@
             }
           },
           "404": {
-            "description": "не удалось добавить данные пользователя"
+            "description": "Не удалось добавить данные пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Успешность запроса"
+                    }
+                  },
+                  "example": {
+                    "success": false
+                  }
+                }
+              }
+            }
           }
         }
       },
