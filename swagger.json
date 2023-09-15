@@ -6,7 +6,7 @@
   },
   "components": {
     "schemas": {
-      "Authorization control": {
+      "AuthorizationСontrol": {
         "type": "object",
         "properties": {
           "success": {
@@ -27,7 +27,7 @@
           }
         },
         "example": {
-          "succes": "true,",
+          "success": "true,",
           "msg": {
             "id": "64b299cb140266a6294d2c4e",
             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f"
@@ -381,7 +381,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Authorization control"
+                  "$ref": "#/components/schemas/AuthorizationСontrol"
                 }
               }
             }

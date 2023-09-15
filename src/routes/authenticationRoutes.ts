@@ -7,7 +7,7 @@ const authenticationRoutes = (deleteOne: any, findOne: any) => {
    * @swagger
    * components:
    *   schemas:
-   *     Authorization control:
+   *     AuthorizationСontrol:
    *       type: object
    *       properties:
    *         success:
@@ -22,7 +22,7 @@ const authenticationRoutes = (deleteOne: any, findOne: any) => {
    *               type: string
    *               description: token пользователя
    *       example:
-   *          succes: true,
+   *          success: true,
    *          msg:
    *            id: '64b299cb140266a6294d2c4e'
    *            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f'
@@ -59,7 +59,7 @@ const authenticationRoutes = (deleteOne: any, findOne: any) => {
    *         content:
    *          application/json:
    *            schema:
-   *              $ref: '#/components/schemas/Authorization control'
+   *              $ref: '#/components/schemas/AuthorizationСontrol'
    *       404:
    *         description: Не удалось проверить авторизацию пользователя
    */
