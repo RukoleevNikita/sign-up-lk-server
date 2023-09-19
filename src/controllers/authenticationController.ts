@@ -25,14 +25,13 @@ export const authentication = async (number: string, code: number, findOne: any,
       } else {
         console.error('пользователь не добавлен в БД');
       }
-
       return document ? { id: document._id.toString(), token: token } : null;
     } else {
       const token = generateUserToken(code);
       await insertOne('session', { userId: user._id.toString(), token: token });
       const widgets = await findOne('widgets', { userId: user._id.toString() });
       return { id: user._id.toString(), token: token, widgets: widgets.widgets };
-      return { id: user._id.toString(), token: token, widgets: null };
+      // return { id: user._id.toString(), token: token, widgets: null };
     }
   } catch (error) {
     console.log('authentication 39-line ', error);

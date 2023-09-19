@@ -53,7 +53,6 @@ export const saveSearchServiceSettings = async (req: any, res: any, insertOne: a
         success: true,
       });
     } else {
-      console.log(231);
       res.status(404).json({
         success: false,
       });
@@ -68,7 +67,6 @@ export const saveSearchServiceSettings = async (req: any, res: any, insertOne: a
 export const updateSearchServiceSettings = async (req: any, res: any, updateOne: any, findOne: any) => {
   try {
     const updatedDoc = await updateOne('searchservicesettings', { userId: req.body.userId }, { $set: req.body });
-    console.log(updatedDoc);
     if (updatedDoc !== undefined) {
       res.status(200).json({
         success: true,
