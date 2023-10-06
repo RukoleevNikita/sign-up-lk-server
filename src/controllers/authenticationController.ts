@@ -1,9 +1,12 @@
 import NodeCache from 'node-cache';
-import { sessionVerificationBeforeAuthentication, addingUserDataDatabase } from '../core/index.js';
+import { sessionVerificationBeforeAuthentication, userDataHandler } from '../core/index.js';
 import { IMongoDBManager } from '../service/index.js';
 import { tokenController } from '../utils/index.js';
 const cache = new NodeCache({ stdTTL: 90 });
-
+//тест коментов
+/*
+* test coments
+* */
 export const authentication = {
   sendCode:  async (req: any, res: any, dbManager: IMongoDBManager) => {
     try {
@@ -115,13 +118,14 @@ export const authentication = {
         });
       }
       // после успешного добавления пользователя закрыть соединение с монго и отчистить все кеши
-      const processingData = await addingUserDataDatabase(phoneNumber, dbManager.findOne, dbManager.insertOne);
+      const processingData = await userDataHandler.sessionStart(phoneNumber, dbManager.findOne, dbManager.insertOne);
       if (!processingData.success) {
         return res.status(400).json({
           success: processingData.success,
           message: processingData.message
         });
       }
+      cache.flushAll();
       return res.status(200).json({
         success: processingData.success,
         message: '...............',
@@ -135,17 +139,28 @@ export const authentication = {
   deleteAuthentication:  async (req: any, res: any, dbManager: IMongoDBManager) => {
     // добавить дисконект от бд
     try {
-      const tokenData = tokenController.verify(req.headers['token']);
-      if (tokenData && (await dbManager.deleteOne('session', tokenData.id)) === undefined) {
-        res.status(404).json({
+      const token = req.headers['token'];
+      const tokenData = tokenController.verify(token);
+
+      if (!tokenData) {
+        return res.status(400).json({
+          success: false,
+          msg: 'Не валидный токен',
+        });
+      }
+
+      const deletedSession = await userDataHandler.sessionDelete(tokenData.id, dbManager.deleteOne);
+
+      if (!deletedSession) {
+        return res.status(404).json({
           success: false,
           msg: 'Сессии не существует',
         });
-      } else {
-        res.status(200).json({
-          success: true,
-        });
       }
+
+      return res.status(200).json({
+        success: true,
+      });
     } catch (error) {
       res.status(500).json({
         error: error,
