@@ -102,29 +102,6 @@
           }
         }
       },
-      "Authorization": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "msg": {
-            "type": "object",
-            "properties": {
-              "token": {
-                "type": "string",
-                "description": "token пользователя"
-              }
-            }
-          }
-        },
-        "example": {
-          "success": true,
-          "msg": {
-            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f"
-          }
-        }
-      },
       "DeleteSession": {
         "type": "object",
         "properties": {
@@ -444,7 +421,7 @@
     "/api/authentication/send-message": {
       "post": {
         "tags": [
-          "Authorization"
+          "Authentication"
         ],
         "summary": "отправка проверочного кода",
         "parameters": [
@@ -547,7 +524,7 @@
     "/api/authentication/check-message": {
       "post": {
         "tags": [
-          "Authorization"
+          "Authentication"
         ],
         "summary": "проверка введенного кода",
         "parameters": [
@@ -666,52 +643,10 @@
         }
       }
     },
-    "api/authentication/": {
-      "get": {
-        "tags": [
-          "Authorization"
-        ],
-        "summary": "НЕ РЕАЛИЗОВАНО!",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "token"
-                ]
-              }
-            },
-            "description": "token пользователя"
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthorizationControl"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Не удалось проверить авторизацию пользователя"
-          }
-        }
-      }
-    },
     "/api/authentication/": {
       "delete": {
         "tags": [
-          "Authorization"
+          "Authentication"
         ],
         "summary": "запрос на удаление авторизации",
         "parameters": [
@@ -930,7 +865,7 @@
   },
   "tags": [
     {
-      "name": "Authorization",
+      "name": "Authentication",
       "description": "управление авторизацией клиента"
     },
     {

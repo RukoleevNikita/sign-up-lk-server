@@ -1,7 +1,7 @@
 /**
  * @swagger
  * tags:
- *   name: Authorization
+ *   name: Authentication
  *   description: управление авторизацией клиента
  */
 
@@ -43,7 +43,7 @@
  * @swagger
  * /api/authentication/send-message:
  *   post:
- *     tags: [Authorization]
+ *     tags: [Authentication]
  *     summary: отправка проверочного кода
  *     parameters:
  *       - in: header
@@ -155,7 +155,7 @@
  * @swagger
  * /api/authentication/check-message:
  *   post:
- *     tags: [Authorization]
+ *     tags: [Authentication]
  *     summary: проверка введенного кода
  *     parameters:
  *       - in: header
@@ -233,54 +233,54 @@
  *                 message: Превышен лимит запросов. Пожалуйста, подождите.
  */
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     Authorization:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *         msg:
- *           type: object
- *           properties:
- *             token:
- *               type: string
- *               description: token пользователя
- *       example:
- *          success: true
- *          msg:
- *            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f'
- */
-/**
- * @openapi
- * 'api/authentication/':
- *  get:
- *     tags: [Authorization]
- *     summary: НЕ РЕАЛИЗОВАНО!
- *     requestBody:
- *       required: true
- *       content:
- *        application/json:
- *          schema:
- *           type: object
- *           properties:
- *             token:
- *               type: string
- *           required:
- *             - token
- *        description: token пользователя
- *     responses:
- *       200:
- *         description: success
- *         content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/AuthorizationControl'
- *       404:
- *         description: Не удалось проверить авторизацию пользователя
- */
+// /**
+//  * @swagger
+//  * components:
+//  *   schemas:
+//  *     Authentication:
+//  *       type: object
+//  *       properties:
+//  *         success:
+//  *           type: boolean
+//  *         msg:
+//  *           type: object
+//  *           properties:
+//  *             token:
+//  *               type: string
+//  *               description: token пользователя
+//  *       example:
+//  *          success: true
+//  *          msg:
+//  *            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f'
+//  */
+// /**
+//  * @openapi
+//  * 'api/authentication/':
+//  *  get:
+//  *     tags: [Authentication]
+//  *     summary: НЕ РЕАЛИЗОВАНО!
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *        application/json:
+//  *          schema:
+//  *           type: object
+//  *           properties:
+//  *             token:
+//  *               type: string
+//  *           required:
+//  *             - token
+//  *        description: token пользователя
+//  *     responses:
+//  *       200:
+//  *         description: success
+//  *         content:
+//  *          application/json:
+//  *            schema:
+//  *              $ref: '#/components/schemas/Authentication'
+//  *       404:
+//  *         description: Не удалось проверить авторизацию пользователя
+//  */
 
 /**
  * @swagger
@@ -298,7 +298,7 @@
  * @openapi
  * /api/authentication/:
  *   delete:
- *     tags: [Authorization]
+ *     tags: [Authentication]
  *     summary: запрос на удаление авторизации
  *     parameters:
  *       - in: header
