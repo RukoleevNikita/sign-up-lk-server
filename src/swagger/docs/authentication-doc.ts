@@ -146,7 +146,7 @@
  *                     description: идентификатор виджета
  *       example:
  *         success: true,
- *         message: '............'
+ *         message: 'Код успешно прошел валидацию.'
  *         data:
  *           token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f'
  *           widgets: []
@@ -319,6 +319,36 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/DeleteSession'
+ *       400:
+ *         description: не валидный токен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: успешность запроса
+ *                 message:
+ *                   type: string
+ *                   description: сообщение ошибки
+ *               example:
+ *                 success: false
+ *                 message: Не валидный токен.
  *       404:
- *         description: Сессии не существует
+ *         description: сессии не существует
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: успешность запроса
+ *                 message:
+ *                   type: string
+ *                   description: сообщение ошибки
+ *               example:
+ *                 success: false
+ *                 message: Сессии не существует.
  */

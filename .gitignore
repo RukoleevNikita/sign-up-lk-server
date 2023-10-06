@@ -8,7 +8,6 @@ lib-cov
 *.pid
 *.gz
 *.swp
-*.comment
 *.DS_Store
 .-*
 
@@ -16,7 +15,6 @@ pids
 logs
 results
 tmp
-.*\.(js|jsx|ts|tsx|json|html|css|scss|less|sass|php|py|rb|java)$
 # Build
 /build
 

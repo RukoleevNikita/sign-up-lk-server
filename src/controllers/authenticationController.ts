@@ -3,10 +3,7 @@ import { sessionVerificationBeforeAuthentication, userDataHandler } from '../cor
 import { IMongoDBManager } from '../service/index.js';
 import { tokenController } from '../utils/index.js';
 const cache = new NodeCache({ stdTTL: 90 });
-//тест коментов
-/*
-* test coments
-* */
+
 export const authentication = {
   sendCode:  async (req: any, res: any, dbManager: IMongoDBManager) => {
     try {
@@ -82,7 +79,7 @@ export const authentication = {
         return res.status(201).json({
           success: sessionVerificationData.success,
           data: sessionVerificationData.data,
-          message: 'Данные о запущенной сессии'
+          message: 'Данные о запущенной сессии.'
         });
       }
     } catch (error) {
@@ -95,7 +92,7 @@ export const authentication = {
       const cachePhoneNumber = cache.get(`${phoneNumber}_phoneNumber`);
       const requestCounter = cache.get(`${phoneNumber}_count_checkCode`) || 0;
       cache.set(`${phoneNumber}_count_checkCode`, Number(requestCounter) + 1, 180);
-      // console.log('phoneNumber, cachePhoneNumber ', typeof phoneNumber, typeof  cachePhoneNumber);
+
       if (Number(cache.get(`${phoneNumber}_count_checkCode`)) > 4) {
         return res.status(429).json({
           success: false,
@@ -105,16 +102,16 @@ export const authentication = {
       if (phoneNumber !== cachePhoneNumber) {
         return res.status(422).json({
           success: false,
-          message: 'Данные не прошли валидацию'
+          message: 'Данные не прошли валидацию.'
         });
       }
       const cacheCode = cache.get(`${phoneNumber}_code`);
       const verificationCodeClient = req.headers['verification-code'];
-      // console.log('cacheCode, verificationCodeClient ', cacheCode, verificationCodeClient);
+
       if (String(cacheCode) !== verificationCodeClient) {
         return res.status(423).json({
           success: false,
-          message: 'Введен не верный код'
+          message: 'Введен не верный код.'
         });
       }
       // после успешного добавления пользователя закрыть соединение с монго и отчистить все кеши
@@ -128,7 +125,7 @@ export const authentication = {
       cache.flushAll();
       return res.status(200).json({
         success: processingData.success,
-        message: '...............',
+        message: 'Код успешно прошел валидацию.',
         data: processingData.data
 
       });
@@ -137,7 +134,6 @@ export const authentication = {
     }
   },
   deleteAuthentication:  async (req: any, res: any, dbManager: IMongoDBManager) => {
-    // добавить дисконект от бд
     try {
       const token = req.headers['token'];
       const tokenData = tokenController.verify(token);
@@ -145,7 +141,7 @@ export const authentication = {
       if (!tokenData) {
         return res.status(400).json({
           success: false,
-          msg: 'Не валидный токен',
+          msg: 'Не валидный токен.',
         });
       }
 
@@ -154,7 +150,7 @@ export const authentication = {
       if (!deletedSession) {
         return res.status(404).json({
           success: false,
-          msg: 'Сессии не существует',
+          msg: 'Сессии не существует.',
         });
       }
 
@@ -167,7 +163,6 @@ export const authentication = {
       });
     }
   },
-  // не реализовано
   checkAuthentication: async (req: any, res: any, dbManager: IMongoDBManager) => {
     // try {
     //   const session = await dbManager.findOne('session', { userId: req.body.id });
