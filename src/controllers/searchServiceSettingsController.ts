@@ -13,60 +13,89 @@
 //     telegram: 't.me/v_postnova_nails'
 //   }
 // }
+import { IMongoDBManager } from '../service/index.js';
+import { tokenController } from '../utils/index.js';
+
 export const getSearchServiceSettings = async (req: any, res: any, findOne: any) => {
   try {
-    const searchServiceUserData = req.body;
-    const userId = searchServiceUserData.userId;
-    const doc = await findOne('searchservicesettings', { userId });
+    const token = req.headers['token'];
+    const tokenData = tokenController.verify(token);
+    if (!tokenData) {
+      res.status(422).json({
+        success: false,
+        message: 'Данные не прошли валидацию.',
+      });
+    }
+    const document = await findOne('searchservicesettings', { userId: tokenData?.id });
 
-    if (!doc) {
+    if (!document) {
       res.status(404).json({
         success: false,
-        error: 'документ не найден',
+        message: 'Документ не найден.',
       });
     } else {
       res.status(200).json({
         success: true,
-        msg: doc,
+        token: token,
+        data: document,
       });
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      error: 'Internal Server Error',
+      message: 'Внутренняя ошибка сервера.',
     });
   }
 };
 
 export const saveSearchServiceSettings = async (req: any, res: any, insertOne: any) => {
   try {
-    const { userId, userDataSearchService } = req.body;
-
-    const result = await insertOne('searchservicesettings', {
-      userId,
-      userDataSearchService,
-    });
-
-    if (result) {
-      res.status(200).json({
-        success: true,
+    const tokenData = tokenController.verify(req.headers['token']);
+    const { userDataSearchService } = req.body;
+    if (tokenData?.id && userDataSearchService) {
+      const { id } = tokenData;
+      const result = await insertOne('searchservicesettings', {
+        userId: id,
+        userDataSearchService,
       });
-    } else {
-      res.status(404).json({
-        success: false,
-      });
+
+      if (result) {
+        res.status(200).json({
+          success: true,
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+        });
+      }
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({
-      error: error,
+      success: false,
+      message: 'Внутренняя ошибка сервера.',
     });
   }
 };
 
-export const updateSearchServiceSettings = async (req: any, res: any, updateOne: any, findOne: any) => {
+
+export const updateSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
   try {
-    const updatedDoc = await updateOne('searchservicesettings', { userId: req.body.userId }, { $set: req.body });
+    const token = req.headers['token'];
+    const tokenData = tokenController.verify(token);
+    if (!tokenData) {
+      res.status(422).json({
+        success: false,
+        message: 'Данные не прошли валидацию.',
+      });
+    }
+
+    const updatedDoc = await dbManager.updateOne(
+      'searchservicesettings',
+      { userId: tokenData?.id },
+      { $set: req.body }
+    );
     if (updatedDoc !== undefined) {
       res.status(200).json({
         success: true,
@@ -74,14 +103,14 @@ export const updateSearchServiceSettings = async (req: any, res: any, updateOne:
     } else {
       res.status(500).json({
         success: false,
-        error: 'документ не был обновлен',
+        error: 'Документ не был обновлен.',
       });
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      error: 'Internal Server Error',
+      error: 'Внутренняя ошибка сервера.',
     });
   }
 };

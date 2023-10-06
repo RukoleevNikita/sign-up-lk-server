@@ -1,101 +1,177 @@
-import generateUserToken from '../utils/generateUserToken.js';
-import getWidgets from '../utils/getWidgets.js';
+import NodeCache from 'node-cache';
+import { sessionVerificationBeforeAuthentication, addingUserDataDatabase } from '../core/index.js';
+import { IMongoDBManager } from '../service/index.js';
+import { tokenController } from '../utils/index.js';
+const cache = new NodeCache({ stdTTL: 90 });
 
-export const sessionVerificationBeforeAuthentication = async (number: string, findOne: any) => {
-  const user = await findOne('users', { phoneNumber: number });
-  if (!user) return false;
-  const session = await findOne('session', { userId: user._id.toString() });
-  if (session) {
-    const widgets = await findOne('widgets', { userId: user._id.toString() });
-    return { id: user._id.toString(), token: session.token, widgets: widgets.widgets };
-  } else {
-    return false;
-  }
-};
-
-export const authentication = async (number: string, code: number, findOne: any, insertOne: any) => {
-  try {
-    const user = await findOne('users', { phoneNumber: number });
-    if (!user) {
-      const token = generateUserToken(code);
-      const document = await insertOne('users', { phoneNumber: number });
-      if (document) {
-        await insertOne('session', { userId: document._id.toString(), token: token });
-        await insertOne('widgets', { userId: document._id.toString(), widgets: getWidgets() });
-      } else {
-        console.error('пользователь не добавлен в БД');
+export const authentication = {
+  sendCode:  async (req: any, res: any, dbManager: IMongoDBManager) => {
+    try {
+      const sessionVerificationData = await sessionVerificationBeforeAuthentication((req.headers['phone-number'] ?? ''), dbManager.findOne);
+      const requestCounter = cache.get(`${sessionVerificationData.validPhoneNumber}_count_sendCode`) || 0;
+      // 3 минуты храниться в кеше информация о количестве запросов
+      cache.set(`${sessionVerificationData.validPhoneNumber}_count_sendCode`, Number(requestCounter) + 1, 180);
+      // проверка на количество запросов
+      if (Number(cache.get(`${sessionVerificationData.validPhoneNumber}_count_sendCode`)) > 4) {
+        return res.status(429).json({
+          success: false,
+          message: 'Превышен лимит запросов. Пожалуйста, подождите.'
+        });
       }
-      return document ? { id: document._id.toString(), token: token } : null;
-    } else {
-      const token = generateUserToken(code);
-      await insertOne('session', { userId: user._id.toString(), token: token });
-      const widgets = await findOne('widgets', { userId: user._id.toString() });
-      return { id: user._id.toString(), token: token, widgets: widgets.widgets };
-      // return { id: user._id.toString(), token: token, widgets: null };
+
+      if (!sessionVerificationData.success && !sessionVerificationData.validPhoneNumber) {
+        // 'Номер телефона не корректен' или 'Произошла ошибка при обработке запроса'
+        return res.status(404).json({
+          success: sessionVerificationData.success,
+          message: sessionVerificationData.message,
+          data: null
+        });
+      }
+
+      // проверка для случая если клиент оправил код, но сразу перезагрузил страницу (описать позже)
+      // добавить статус отправки смс в кеш и ниже проверять если отправлено успешно и номер с запроса и номер из кеша то можно пропустить
+      // if (req.headers['phone-number'] === cache.get(`${sessionVerificationData.validPhoneNumber}_phoneNumber`)) {
+      //   return res.status(200).json({
+      //     success: true,
+      //   });
+      // }
+      // если данных о сесии нет в бд
+      if (!sessionVerificationData.success && sessionVerificationData.validPhoneNumber) {
+        // 'Пользователь не найден' и 'Сессия не запущена'
+
+        // const verificationCode: number = generateVerificationCode();
+        const verificationCode = 1234; // на время разработки
+
+        /* отправка проверочного кода клиенту
+            const response = await axios.get('https://sms.ru/sms/send', {
+                  //https://smsc.ru/sys/send.php
+                  params: {
+                    api_id: process.env.API_KEY_SMSRU,
+                    to: sessionVerificationData.number,
+                    sender: process.env.SENDER_SMSRU,
+                    msg: `Ваш код авторизцации ${verificationCode}`,
+                    // login: process.env.API_LOGIN_SMSC,
+                    // psw: process.env.API_PASSWORD_SMSC,
+                    // phones: '79618833873',
+                    // sender: 'Сервис запишись',
+                    // mes: `Подтвердите регистрацию в сервисе signup! Правда сервис еще в стадии разработки!`,
+                  },
+                });
+            */
+        // после того как произошла отправка сгенерировного кода пользователю
+        // если response.statusText === 'OK' сообщение успешно отправлено клиенту
+        // if (response.statusText === 'OK') {
+        cache.set(`${sessionVerificationData.validPhoneNumber}_code`, verificationCode, 90); // добавление в кеш на 90 секунд
+        cache.set(`${sessionVerificationData.validPhoneNumber}_phoneNumber`, `${sessionVerificationData.validPhoneNumber}`, 90);
+        // cache.set(`${response.statusText}_sendStatus`, `${response.statusText.validPhoneNumber}`, 90);
+        return res.status(200).json({
+          success: true,
+        });
+        // } else {
+        // ошибка отправки сообщения
+        // res.status(400).json({
+        //   success: false,
+        //   data: 'Ошибка отправки сообщения `${errorData(response.status...)}`'
+        // });
+        // }
+      } else {
+        // данные о запущенной сесии
+        return res.status(201).json({
+          success: sessionVerificationData.success,
+          data: sessionVerificationData.data,
+          message: 'Данные о запущенной сессии'
+        });
+      }
+    } catch (error) {
+      console.log('authentication send error ', error);
     }
-  } catch (error) {
-    console.log('authentication 39-line ', error);
+  },
+  checkCode: async (req: any, res: any, dbManager: IMongoDBManager) => {
+    try {
+      const phoneNumber = req.headers['phone-number'];
+      const cachePhoneNumber = cache.get(`${phoneNumber}_phoneNumber`);
+      const requestCounter = cache.get(`${phoneNumber}_count_checkCode`) || 0;
+      cache.set(`${phoneNumber}_count_checkCode`, Number(requestCounter) + 1, 180);
+      // console.log('phoneNumber, cachePhoneNumber ', typeof phoneNumber, typeof  cachePhoneNumber);
+      if (Number(cache.get(`${phoneNumber}_count_checkCode`)) > 4) {
+        return res.status(429).json({
+          success: false,
+          message: 'Превышен лимит запросов. Пожалуйста, подождите.'
+        });
+      }
+      if (phoneNumber !== cachePhoneNumber) {
+        return res.status(422).json({
+          success: false,
+          message: 'Данные не прошли валидацию'
+        });
+      }
+      const cacheCode = cache.get(`${phoneNumber}_code`);
+      const verificationCodeClient = req.headers['verification-code'];
+      // console.log('cacheCode, verificationCodeClient ', cacheCode, verificationCodeClient);
+      if (String(cacheCode) !== verificationCodeClient) {
+        return res.status(423).json({
+          success: false,
+          message: 'Введен не верный код'
+        });
+      }
+      // после успешного добавления пользователя закрыть соединение с монго и отчистить все кеши
+      const processingData = await addingUserDataDatabase(phoneNumber, dbManager.findOne, dbManager.insertOne);
+      if (!processingData.success) {
+        return res.status(400).json({
+          success: processingData.success,
+          message: processingData.message
+        });
+      }
+      return res.status(200).json({
+        success: processingData.success,
+        message: '...............',
+        data: processingData.data
+
+      });
+    } catch (error) {
+      console.log('authentication checkCode error ', error);
+    }
+  },
+  deleteAuthentication:  async (req: any, res: any, dbManager: IMongoDBManager) => {
+    // добавить дисконект от бд
+    try {
+      const tokenData = tokenController.verify(req.headers['token']);
+      if (tokenData && (await dbManager.deleteOne('session', tokenData.id)) === undefined) {
+        res.status(404).json({
+          success: false,
+          msg: 'Сессии не существует',
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        error: error,
+      });
+    }
+  },
+  // не реализовано
+  checkAuthentication: async (req: any, res: any, dbManager: IMongoDBManager) => {
+    // try {
+    //   const session = await dbManager.findOne('session', { userId: req.body.id });
+    //   if (session === null) {
+    //     res.status(404).json({
+    //       success: false,
+    //       msg: 'Пользователь не авторизован',
+    //     });
+    //   } else {
+    //     // res.status(200).json({
+    //     //   success: true,
+    //     //   msg: { id: session.userId, token: session.token },
+    //     // });
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   res.status(500).json({
+    //     error: error,
+    //   });
+    // }
   }
 };
-
-export const checkAuthentication = async (req: any, res: any, findOne: any) => {
-  try {
-    const session = await findOne('session', { userId: req.body.id });
-    if (session === null) {
-      res.status(404).json({
-        success: false,
-        msg: 'Пользователь не авторизован',
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-        msg: { id: session.userId, token: session.token },
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: error,
-    });
-  }
-};
-
-export const deleteAuthentication = async (req: any, res: any, deleteOne: any) => {
-  // добавить дисконект от бд
-  try {
-    if ((await deleteOne('session', req.body.id)) === undefined) {
-      res.status(404).json({
-        success: false,
-        msg: 'Сессии с таким id не существует',
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      error: error,
-    });
-  }
-};
-
-// export const setSession = async (req: any, res: any, deleteOne: any) => {
-//   try {
-//     // установка ссеий
-//     if ((await deleteOne('session', req.body.id)) === undefined) {
-//       res.status(404).json({
-//         success: false,
-//         msg: 'Сессии с таким id не существует',
-//       });
-//     } else {
-//       res.status(200).json({
-//         success: true,
-//       });
-//     }
-//   } catch (error) {
-//     res.status(500).json({
-//       error: error,
-//     });
-//   }
-// };

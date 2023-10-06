@@ -8,6 +8,7 @@ lib-cov
 *.pid
 *.gz
 *.swp
+*.comment
 *.DS_Store
 .-*
 

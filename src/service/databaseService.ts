@@ -31,6 +31,11 @@ class MongoDBManager {
 
   async connect(): Promise<void> {
     try {
+      // mongoose
+      //   .set('strictQuery', false)
+      //   .connect(`mongodb+srv://${process.env.USERNAME_MONGO}:${process.env.PASSWORD_MONGO}@cluster0.rahqltj.mongodb.net/`)
+      //   .then(() => console.log('Db is connected'))
+      //   .catch((err) => console.log('Db error', err));
       //   await connect(this.databaseUrl, { useNewUrlParser: true, useUnifiedTopology: true });
       await set('strictQuery', false);
       await connect(this.databaseUrl);
@@ -54,16 +59,16 @@ class MongoDBManager {
       // const modelUse = getModel(collectionName);
       // return (await modelUse.create(document)) || undefined;
       switch (collectionName) {
-        case 'users':
-          return (await UserModel.create(document)) || undefined;
-        case 'session':
-          return (await SessionModel.create(document)) || undefined;
-        case 'widgets':
-          return (await WidgetModel.create(document)) || undefined;
-        case 'searchservicesettings':
-          return (await SearchServiceSettingsModel.create(document)) || undefined;
-        default:
-          return undefined;
+      case 'users':
+        return (await UserModel.create(document)) || undefined;
+      case 'session':
+        return (await SessionModel.create(document)) || undefined;
+      case 'widgets':
+        return (await WidgetModel.create(document)) || undefined;
+      case 'searchservicesettings':
+        return (await SearchServiceSettingsModel.create(document)) || undefined;
+      default:
+        return undefined;
       }
       // this.model = this.getModel(collectionName);
       // return this.model ? await this.model.create(document) : undefined;
@@ -77,16 +82,16 @@ class MongoDBManager {
       // const modelUse = await getModel(collectionName);
       // if (modelUse) return modelUse.findOne(query);
       switch (collectionName) {
-        case 'users':
-          return (await UserModel.findOne(query)) || null;
-        case 'session':
-          return (await SessionModel.findOne(query)) || null;
-        case 'widgets':
-          return (await WidgetModel.findOne(query)) || null;
-        case 'searchservicesettings':
-          return (await SearchServiceSettingsModel.findOne(query)) || null;
-        default:
-          return null;
+      case 'users':
+        return (await UserModel.findOne(query)) || null;
+      case 'session':
+        return (await SessionModel.findOne(query)) || null;
+      case 'widgets':
+        return (await WidgetModel.findOne(query)) || null;
+      case 'searchservicesettings':
+        return (await SearchServiceSettingsModel.findOne(query)) || null;
+      default:
+        return null;
       }
       // this.model = this.getModel(collectionName);
       // return (await this.model?.findOne(query)) || null;
@@ -104,16 +109,16 @@ class MongoDBManager {
   ): Promise<UpdateWriteOpResult | undefined> {
     try {
       switch (collectionName) {
-        case 'users':
-          return (await UserModel.updateOne(query, update)) || undefined;
-        case 'session':
-          return (await SessionModel.updateOne(query, update)) || undefined;
-        case 'widgets':
-          return (await WidgetModel.updateOne(query, update)) || undefined;
-        case 'searchservicesettings':
-          return (await SearchServiceSettingsModel.updateOne(query, update)) || undefined;
-        default:
-          return undefined;
+      case 'users':
+        return (await UserModel.updateOne(query, update)) || undefined;
+      case 'session':
+        return (await SessionModel.updateOne(query, update)) || undefined;
+      case 'widgets':
+        return (await WidgetModel.updateOne(query, update)) || undefined;
+      case 'searchservicesettings':
+        return (await SearchServiceSettingsModel.updateOne(query, update)) || undefined;
+      default:
+        return undefined;
       }
     } catch (error) {
       console.error('Error updating document in MongoDB:', error);
@@ -136,12 +141,12 @@ class MongoDBManager {
   async deleteOne(collectionName: string, query: string): Promise<boolean | undefined> {
     try {
       switch (collectionName) {
-        case 'users':
-          return (await UserModel.findOneAndDelete({ id: query })) ?? undefined;
-        case 'session':
-          return (await SessionModel.findOneAndDelete({ userId: query })) ?? undefined;
-        default:
-          return undefined;
+      case 'users':
+        return (await UserModel.findOneAndDelete({ id: query })) ?? undefined;
+      case 'session':
+        return (await SessionModel.findOneAndDelete({ userId: query })) ?? undefined;
+      default:
+        return undefined;
       }
     } catch (error) {
       console.error('Error deleting document in MongoDB:', error);

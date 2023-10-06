@@ -6,7 +6,103 @@
   },
   "components": {
     "schemas": {
-      "AuthorizationСontrol": {
+      "SendMessageCode": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "успешно ли выполнен запрос"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "description": "токен сессии"
+              },
+              "widgets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "widgetId": {
+                      "type": "integer",
+                      "description": "идентификатор виджета"
+                    },
+                    "active": {
+                      "type": "boolean",
+                      "description": "активен ли виджет"
+                    },
+                    "widgetName": {
+                      "type": "string",
+                      "description": "название виджета"
+                    },
+                    "_id": {
+                      "type": "string",
+                      "description": "идентификатор виджета"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CheckMessageCode": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "успешно ли выполнен запрос"
+          },
+          "message": {
+            "type": "string",
+            "description": "сообщение о успешном запросе"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "description": "токен сессии"
+              },
+              "widgets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "widgetId": {
+                      "type": "integer",
+                      "description": "идентификатор виджета"
+                    },
+                    "active": {
+                      "type": "boolean",
+                      "description": "активен ли виджет"
+                    },
+                    "widgetName": {
+                      "type": "string",
+                      "description": "название виджета"
+                    },
+                    "_id": {
+                      "type": "string",
+                      "description": "идентификатор виджета"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "success": "true,",
+          "message": "............",
+          "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f",
+            "widgets": []
+          }
+        }
+      },
+      "Authorization": {
         "type": "object",
         "properties": {
           "success": {
@@ -15,10 +111,6 @@
           "msg": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "description": "id польтзователя"
-              },
               "token": {
                 "type": "string",
                 "description": "token пользователя"
@@ -27,9 +119,8 @@
           }
         },
         "example": {
-          "success": "true,",
+          "success": true,
           "msg": {
-            "id": "64b299cb140266a6294d2c4e",
             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f"
           }
         }
@@ -350,12 +441,237 @@
     }
   },
   "paths": {
-    "api/authorization-control/": {
+    "/api/authentication/send-message": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "отправка проверочного кода",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "phone-number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "номер телефона клиента",
+            "examples": {
+              "phone-number": {
+                "value": "79136553626"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "проверочный код успешно отправлен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешно ли выполнен запрос"
+                    }
+                  },
+                  "example": {
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "сессия была запущена ранее (данные о запущенной сессии)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendMessageCode"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "номер телефона не корректен/произошла ошибка при обработке запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Номер телефона не корректен."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "превышен лимит запросов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Превышен лимит запросов. Пожалуйста, подождите."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authentication/check-message": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "проверка введенного кода",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "phone-number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "номер телефона клиента",
+            "examples": {
+              "phone-number": {
+                "value": "79136553626"
+              }
+            }
+          },
+          {
+            "in": "header",
+            "name": "verification-code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "введенный код верификации",
+            "examples": {
+              "verification-code": {
+                "value": "1234"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "проверочный код успешно отправлен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckMessageCode"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "данные не прошли валидацию",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Данные не прошли валидацию."
+                  }
+                }
+              }
+            }
+          },
+          "423": {
+            "description": "введен не верный код",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Введен не верный код."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "превышен лимит запросов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Превышен лимит запросов. Пожалуйста, подождите."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "api/authentication/": {
       "get": {
         "tags": [
-          "Authorization control"
+          "Authorization"
         ],
-        "summary": "запрос к бд для проверки авторизации",
+        "summary": "НЕ РЕАЛИЗОВАНО!",
         "requestBody": {
           "required": true,
           "content": {
@@ -363,16 +679,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "token": {
                     "type": "string"
                   }
                 },
                 "required": [
-                  "id"
+                  "token"
                 ]
               }
             },
-            "description": "id пользователя"
+            "description": "token пользователя"
           }
         },
         "responses": {
@@ -381,7 +697,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationСontrol"
+                  "$ref": "#/components/schemas/AuthorizationControl"
                 }
               }
             }
@@ -392,30 +708,32 @@
         }
       }
     },
-    "/api/authorization-control/": {
+    "/api/authentication/": {
       "delete": {
         "tags": [
-          "Authorization control"
+          "Authorization"
         ],
         "summary": "запрос на удаление авторизации",
-        "requestBody": {
-          "required": true,
-          "content": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "required": true,
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "token": {
                     "type": "string"
                   }
                 },
                 "required": [
-                  "id"
+                  "token"
                 ]
               }
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Успешное удаление",
@@ -428,7 +746,7 @@
             }
           },
           "404": {
-            "description": "Сессии с таким id не существует"
+            "description": "Сессии не существует"
           }
         }
       }
@@ -486,7 +804,7 @@
         "tags": [
           "Settings"
         ],
-        "summary": "gолучение данных пользователя по ID",
+        "summary": "получение данных пользователя по ID",
         "parameters": [
           {
             "in": "query",
@@ -612,8 +930,8 @@
   },
   "tags": [
     {
-      "name": "Authorization control",
-      "description": "проверить/удалить авторизацию пользователя"
+      "name": "Authorization",
+      "description": "управление авторизацией клиента"
     },
     {
       "name": "Request for specialization parameters",
