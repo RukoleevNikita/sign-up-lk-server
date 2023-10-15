@@ -39,6 +39,7 @@
  *                     type: string
  *                     description: идентификатор виджета
  */
+
 /**
  * @swagger
  * /api/authentication/send-message:
@@ -66,8 +67,11 @@
  *                 success:
  *                   type: boolean
  *                   description: успешно ли выполнен запрос
+ *                 data:
+ *                   type: null
  *               example:
  *                 success: true
+ *                 data: null
  *       201:
  *         description: сессия была запущена ранее (данные о запущенной сессии)
  *         content:
@@ -107,6 +111,7 @@
  *                 success: false
  *                 message: Номер телефона не корректен.
  */
+
 
 /**
  * @swagger

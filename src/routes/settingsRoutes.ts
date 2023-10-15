@@ -6,7 +6,7 @@ const settingsRoutes = (dbManager: IMongoDBManager) => {
   const settingsRoutes = express.Router();
 
   settingsRoutes.get('/search-service', (req, res) =>
-    searchServiceSettingsController.getSearchServiceSettings(req, res, dbManager.findOne)
+    searchServiceSettingsController.getSearchServiceSettings(req, res, dbManager)
   );
   settingsRoutes.post('/search-service', (req, res) =>
     searchServiceSettingsController.saveSearchServiceSettings(req, res, dbManager.insertOne)

@@ -66,6 +66,7 @@ export const authentication = {
         // cache.set(`${response.statusText}_sendStatus`, `${response.statusText.validPhoneNumber}`, 90);
         return res.status(200).json({
           success: true,
+          data: null
         });
         // } else {
         // ошибка отправки сообщения

@@ -6,6 +6,7 @@ import swaggerDocs from './swagger/swagger.js';
 import MongoDBManager from './service/index.js';
 // import isAuthenticated from './utils/isAuthenticated.js';
 import { profileRoutes, settingsRoutes, authenticationRoutes, paramsRoutes } from './routes/index.js';
+import { checkAuthenticationMiddleware } from './middleware/index.js';
 
 /*
   TODO:
@@ -24,7 +25,7 @@ const httpServer = createServer(app);
 
 app.get('/', (req, res) => res.send(200));
 app.use('/api/authentication', authenticationRoutes(dbManager));
-app.use('/api/settings', settingsRoutes(dbManager)); // написать проверку авторизации
+app.use('/api/settings', checkAuthenticationMiddleware, settingsRoutes(dbManager)); // написать проверку авторизации
 app.use('/api/get-params', paramsRoutes()); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());

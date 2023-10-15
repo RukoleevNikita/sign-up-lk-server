@@ -15,8 +15,9 @@
 // }
 import { IMongoDBManager } from '../service/index.js';
 import { tokenController } from '../utils/index.js';
+import { searchServiceSettingsHandler } from '../core/index.js';
 
-export const getSearchServiceSettings = async (req: any, res: any, findOne: any) => {
+export const getSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
   try {
     const token = req.headers['token'];
     const tokenData = tokenController.verify(token);
@@ -25,20 +26,22 @@ export const getSearchServiceSettings = async (req: any, res: any, findOne: any)
         success: false,
         message: 'Данные не прошли валидацию.',
       });
-    }
-    const document = await findOne('searchservicesettings', { userId: tokenData?.id });
-
-    if (!document) {
-      res.status(404).json({
-        success: false,
-        message: 'Документ не найден.',
-      });
     } else {
-      res.status(200).json({
-        success: true,
-        token: token,
-        data: document,
-      });
+      // const document = await findOne('searchservicesettings', { userId: tokenData?.id });
+      const document = await searchServiceSettingsHandler.getSettings(tokenData?.id, dbManager.findOne);
+
+      if (!document) {
+        res.status(404).json({
+          success: false,
+          message: 'Документ не найден.',
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          token: token,
+          data: document,
+        });
+      }
     }
   } catch (error) {
     console.error(error);
