@@ -451,10 +451,14 @@
                     "success": {
                       "type": "boolean",
                       "description": "успешно ли выполнен запрос"
+                    },
+                    "data": {
+                      "type": null
                     }
                   },
                   "example": {
-                    "success": true
+                    "success": true,
+                    "data": null
                   }
                 }
               }
