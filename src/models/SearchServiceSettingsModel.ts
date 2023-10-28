@@ -1,28 +1,4 @@
 import { model, Schema, Document, Model, Types } from 'mongoose';
-
-interface UserServicesObject {
-  service: string;
-  price: string;
-}
-
-interface UserDataSearchService {
-  activeAccount: boolean;
-  socialNetwork: string[];
-  workPhoneNumber: string;
-  firstName: string;
-  lastName: string;
-  userServices: UserServicesObject[];
-  additionalServices: string[];
-  address: string[];
-  whatsapp: string;
-  telegram: string;
-}
-
-export interface SearchServiceSettingsDocument extends Document {
-  userId: Types.ObjectId;
-  userDataSearchService: UserDataSearchService;
-}
-
 // export interface SearchServiceSettingsDocument extends Document {
 //   userId: Types.ObjectId;
 //   activeAccount?: boolean;
@@ -52,12 +28,36 @@ export interface SearchServiceSettingsDocument extends Document {
 //   }
 // }
 // фото примеров работ
+interface UserServicesObject {
+  service: string;
+  price: string;
+}
+
+interface UserDataSearchService {
+  activeAccount: boolean;
+  socialNetwork: string[];
+  workPhoneNumber: string;
+  firstName: string;
+  lastName: string;
+  userServices: UserServicesObject[];
+  additionalServices: string[];
+  address: string[];
+  whatsapp: string;
+  telegram: string;
+}
+
+export interface SearchServiceSettingsDocument extends Document {
+  userId: Types.ObjectId;
+  userDataSearchService: UserDataSearchService;
+}
+
+
 const SearchServiceSettingsSchema = new Schema<SearchServiceSettingsDocument>({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
     unique: true,
-    ref: 'user',
+    ref: 'user'
   },
   userDataSearchService: {
     activeAccount: {

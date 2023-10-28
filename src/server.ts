@@ -8,13 +8,6 @@ import MongoDBManager from './service/index.js';
 import { profileRoutes, settingsRoutes, authenticationRoutes, paramsRoutes } from './routes/index.js';
 import { checkAuthenticationMiddleware } from './middleware/index.js';
 
-/*
-  TODO:
-    * шифровать в токен _id пользователя и данные
-    * Закрытие соединения с Redis после использования redisClient.quit();
-    * пересылать только ТОКЕН, ID - нельзя!!!!
-*/
-
 const dbManager = new MongoDBManager(`${process.env.MONGODB_URI}`);
 dbManager.connect();
 const app: Express = express();
@@ -25,7 +18,7 @@ const httpServer = createServer(app);
 
 app.get('/', (req, res) => res.send(200));
 app.use('/api/authentication', authenticationRoutes(dbManager));
-app.use('/api/settings', checkAuthenticationMiddleware, settingsRoutes(dbManager)); // написать проверку авторизации
+app.use('/api/settings', checkAuthenticationMiddleware(dbManager), settingsRoutes(dbManager)); // написать проверку авторизации
 app.use('/api/get-params', paramsRoutes()); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());

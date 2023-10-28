@@ -14,64 +14,22 @@
 //   }
 // }
 import { IMongoDBManager } from '../service/index.js';
-import { tokenController } from '../utils/index.js';
 import { searchServiceSettingsHandler } from '../core/index.js';
 
 export const getSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
   try {
-    const token = req.headers['token'];
-    const tokenData = tokenController.verify(token);
-    if (!tokenData) {
-      res.status(422).json({
+    const document = await searchServiceSettingsHandler.getSettings(res.locals.id, dbManager.findOne);
+    if (!document) {
+      res.status(404).json({
         success: false,
-        message: 'Данные не прошли валидацию.',
+        message: 'Документ не найден.',
       });
     } else {
-      // const document = await findOne('searchservicesettings', { userId: tokenData?.id });
-      const document = await searchServiceSettingsHandler.getSettings(tokenData?.id, dbManager.findOne);
-
-      if (!document) {
-        res.status(404).json({
-          success: false,
-          message: 'Документ не найден.',
-        });
-      } else {
-        res.status(200).json({
-          success: true,
-          token: token,
-          data: document,
-        });
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: 'Внутренняя ошибка сервера.',
-    });
-  }
-};
-
-export const saveSearchServiceSettings = async (req: any, res: any, insertOne: any) => {
-  try {
-    const tokenData = tokenController.verify(req.headers['token']);
-    const { userDataSearchService } = req.body;
-    if (tokenData?.id && userDataSearchService) {
-      const { id } = tokenData;
-      const result = await insertOne('searchservicesettings', {
-        userId: id,
-        userDataSearchService,
+      res.status(200).json({
+        success: true,
+        token: res.locals.token,
+        data: document,
       });
-
-      if (result) {
-        res.status(200).json({
-          success: true,
-        });
-      } else {
-        res.status(404).json({
-          success: false,
-        });
-      }
     }
   } catch (error) {
     console.error(error);
@@ -82,31 +40,39 @@ export const saveSearchServiceSettings = async (req: any, res: any, insertOne: a
   }
 };
 
-
-export const updateSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
+export const saveSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
   try {
-    const token = req.headers['token'];
-    const tokenData = tokenController.verify(token);
-    if (!tokenData) {
-      res.status(422).json({
+    const resultSaving = await searchServiceSettingsHandler.saveSettings(res.locals.id, dbManager.insertOne, req.body.userDataSearchService);
+    if (!resultSaving) {
+      res.status(404).json({
         success: false,
-        message: 'Данные не прошли валидацию.',
+        message: 'Ошибка при сохранении настроек пользователя.',
       });
-    }
-
-    const updatedDoc = await dbManager.updateOne(
-      'searchservicesettings',
-      { userId: tokenData?.id },
-      { $set: req.body }
-    );
-    if (updatedDoc !== undefined) {
+    } else {
       res.status(200).json({
         success: true,
       });
-    } else {
-      res.status(500).json({
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Внутренняя ошибка сервера.',
+    });
+  }
+};
+
+export const updateSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
+  try {
+    const updateResult = await searchServiceSettingsHandler.updateSearchServiceSettings(res.locals.id, dbManager.updateOne, req.body);
+    if (updateResult.modifiedCount === 0) {
+      res.status(404).json({
         success: false,
-        error: 'Документ не был обновлен.',
+        message: 'Документ не был обновлен.',
+      });
+    } else {
+      res.status(200).json({
+        success: true,
       });
     }
   } catch (error) {

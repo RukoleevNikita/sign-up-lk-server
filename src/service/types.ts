@@ -2,7 +2,7 @@ import { Document, UpdateWriteOpResult } from 'mongoose';
 export interface IMongoDBManager {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  insertOne<T extends Document>(collectionName: string, document: T): Promise<object | undefined>;
+  insertOne<T extends Document>(collectionName: string, document: object): Promise<object | undefined>;
   findOne<T extends Document>(collectionName: string, query: object): Promise<T | null>;
   updateOne<T extends Document>(
     collectionName: string,

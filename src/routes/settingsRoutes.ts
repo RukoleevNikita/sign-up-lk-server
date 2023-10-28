@@ -9,7 +9,7 @@ const settingsRoutes = (dbManager: IMongoDBManager) => {
     searchServiceSettingsController.getSearchServiceSettings(req, res, dbManager)
   );
   settingsRoutes.post('/search-service', (req, res) =>
-    searchServiceSettingsController.saveSearchServiceSettings(req, res, dbManager.insertOne)
+    searchServiceSettingsController.saveSearchServiceSettings(req, res, dbManager)
   );
   settingsRoutes.put('/search-service', (req, res) =>
     searchServiceSettingsController.updateSearchServiceSettings(req, res, dbManager)
