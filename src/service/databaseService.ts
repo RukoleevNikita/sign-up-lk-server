@@ -65,7 +65,7 @@ class MongoDBManager {
         return (await SessionModel.create(document)) || undefined;
       case 'widgets':
         return (await WidgetModel.create(document)) || undefined;
-      case 'searchservicesettings':
+      case 'SearchServiceSettings':
         return (await SearchServiceSettingsModel.create(document)) || undefined;
       default:
         return undefined;
@@ -88,7 +88,7 @@ class MongoDBManager {
         return (await SessionModel.findOne(query)) || null;
       case 'widgets':
         return (await WidgetModel.findOne(query)) || null;
-      case 'searchservicesettings':
+      case 'SearchServiceSettings':
         return (await SearchServiceSettingsModel.findOne(query)) || null;
       default:
         return null;
@@ -115,7 +115,7 @@ class MongoDBManager {
         return (await SessionModel.updateOne(query, update)) || undefined;
       case 'widgets':
         return (await WidgetModel.updateOne(query, update)) || undefined;
-      case 'searchservicesettings':
+      case 'SearchServiceSettings':
         return (await SearchServiceSettingsModel.updateOne(query, update)) || undefined;
       default:
         return undefined;
@@ -180,3 +180,9 @@ class MongoDBManager {
 // }
 
 export default MongoDBManager;
+
+
+
+
+
+
