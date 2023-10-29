@@ -1,13 +1,14 @@
+import { Request, Response } from 'express';
 import NodeCache from 'node-cache';
-import { sessionVerificationBeforeAuthentication, userDataHandler } from '../core/index.js';
+import { userDataHandler } from '../core/index.js';
 import { IMongoDBManager } from '../service/index.js';
 import { tokenController } from '../utils/index.js';
 const cache = new NodeCache({ stdTTL: 90 });
 
 export const authentication = {
-  sendCode:  async (req: any, res: any, dbManager: IMongoDBManager) => {
+  sendCode:  async (req: Request, res: Response) => {
     try {
-      const sessionVerificationData = await sessionVerificationBeforeAuthentication((req.headers['phone-number'] ?? ''), dbManager.findOne);
+      const sessionVerificationData = res.locals;
       const requestCounter = cache.get(`${sessionVerificationData.validPhoneNumber}_count_sendCode`) || 0;
       // 3 минуты храниться в кеше информация о количестве запросов
       cache.set(`${sessionVerificationData.validPhoneNumber}_count_sendCode`, Number(requestCounter) + 1, 180);
@@ -16,15 +17,6 @@ export const authentication = {
         return res.status(429).json({
           success: false,
           message: 'Превышен лимит запросов. Пожалуйста, подождите.'
-        });
-      }
-
-      if (!sessionVerificationData.success && !sessionVerificationData.validPhoneNumber) {
-        // 'Номер телефона не корректен' или 'Произошла ошибка при обработке запроса'
-        return res.status(404).json({
-          success: sessionVerificationData.success,
-          message: sessionVerificationData.message,
-          data: null
         });
       }
 
@@ -75,21 +67,14 @@ export const authentication = {
         //   data: 'Ошибка отправки сообщения `${errorData(response.status...)}`'
         // });
         // }
-      } else {
-        // данные о запущенной сесии
-        return res.status(201).json({
-          success: sessionVerificationData.success,
-          data: sessionVerificationData.data,
-          message: 'Данные о запущенной сессии.'
-        });
       }
     } catch (error) {
       console.log('authentication send error ', error);
     }
   },
-  checkCode: async (req: any, res: any, dbManager: IMongoDBManager) => {
+  checkCode: async (req: Request, res: Response, dbManager: IMongoDBManager) => {
     try {
-      const phoneNumber = req.headers['phone-number'];
+      const phoneNumber = req.headers['phone-number'] as string;
       const cachePhoneNumber = cache.get(`${phoneNumber}_phoneNumber`);
       const requestCounter = cache.get(`${phoneNumber}_count_checkCode`) || 0;
       cache.set(`${phoneNumber}_count_checkCode`, Number(requestCounter) + 1, 180);
@@ -103,7 +88,7 @@ export const authentication = {
       if (phoneNumber !== cachePhoneNumber) {
         return res.status(422).json({
           success: false,
-          message: 'Данные не прошли валидацию.'
+          message: 'Данные не прошли валидацию.' // на фронте переадрисация на стартовую страницу тк номер телефона в заголовке был изменен, чего не может быть в обычном сценарии
         });
       }
       const cacheCode = cache.get(`${phoneNumber}_code`);
@@ -116,11 +101,11 @@ export const authentication = {
         });
       }
       // после успешного добавления пользователя закрыть соединение с монго и отчистить все кеши
-      const processingData = await userDataHandler.sessionStart(phoneNumber, dbManager.findOne, dbManager.insertOne);
-      if (!processingData.success) {
+      const processingData = await userDataHandler.sessionStart(phoneNumber, dbManager);
+      if (!processingData?.success) {
         return res.status(400).json({
-          success: processingData.success,
-          message: processingData.message
+          success: processingData?.success,
+          message: processingData?.message
         });
       }
       cache.flushAll();
@@ -134,9 +119,9 @@ export const authentication = {
       console.log('authentication checkCode error ', error);
     }
   },
-  deleteAuthentication:  async (req: any, res: any, dbManager: IMongoDBManager) => {
+  deleteAuthentication:  async (req: Request, res: Response, dbManager: IMongoDBManager) => {
     try {
-      const token = req.headers['token'];
+      const token = req.headers['token'] as string;
       const tokenData = tokenController.verify(token);
 
       if (!tokenData) {
@@ -164,7 +149,7 @@ export const authentication = {
       });
     }
   },
-  checkAuthentication: async (req: any, res: any, dbManager: IMongoDBManager) => {
+  checkAuthentication: async (req: Request, res: Response, dbManager: IMongoDBManager) => {
     // try {
     //   const session = await dbManager.findOne('session', { userId: req.body.id });
     //   if (session === null) {
