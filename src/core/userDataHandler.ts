@@ -1,13 +1,12 @@
 import { tokenController, getWidgets } from '../utils/index.js';
-import { IMongoDBManager } from '../service/index.js';
+import { Users, Sessions, Widgets } from '../models/models.js';
 
 export const userDataHandler = {
-  sessionStart:  async (phoneNumber: string, dbManager: IMongoDBManager) => {
+  sessionStart:  async (phoneNumber: string) => {
     try {
-      const user = await dbManager.findOne('users', { phoneNumber });
-
+      const user = await Users.findOne({ where: {phoneNumber} });
       if (!user) {
-        const document = await dbManager.insertOne('users', { phoneNumber });
+        const document = await Users.create({ phoneNumber });
         if (!document) {
           console.error('Пользователь не добавлен в БД.');
           return {
@@ -15,10 +14,16 @@ export const userDataHandler = {
             message: 'Ошибка при взаимодействии с базой данных',
           };
         } else {
-          const token = tokenController.create(document._id.toString());
-          await dbManager.insertOne('session', { userId: document._id.toString(), token });
-          await dbManager.insertOne('widgets', { userId: document._id.toString(), widgets: getWidgets() });
-
+          const token = tokenController.create(document.dataValues.id.toString());
+          await Sessions.create({ userId: document.dataValues.id.toString(), token });
+          await Widgets.create({ userId: document.dataValues.id.toString(), widgets: getWidgets() });
+          // добавить проверку для обработки ошибок при добавлении в БД
+          // if (!document) {
+          //   console.error('Пользователь не добавлен в БД.');
+          //   return {
+          //     success: false,
+          //     message: 'Ошибка при взаимодействии с базой данных',
+          //   };
           return {
             success: true,
             data: {
@@ -28,9 +33,9 @@ export const userDataHandler = {
           };
         }
       } else {
-        const session = await dbManager.findOne('session', { userId: user._id.toString() });
+        const session = await Sessions.findOne({ where: { userId: user.dataValues.id.toString() }});
         if (session) {
-          const widgets = await dbManager.findOne('widgets', { userId: user._id.toString() });
+          const widgets = await Widgets.findOne({ where: { userId: user.dataValues.id }});
           if (widgets) {
             return {
               success: true,
@@ -41,23 +46,21 @@ export const userDataHandler = {
             };
           }
         } else {
-          const token = tokenController.create(user._id.toString());
-          await dbManager.insertOne('session', { userId: user._id.toString(), token });
+          const token = tokenController.create(user.dataValues.id.toString());
+          await Sessions.create({ userId: user.dataValues.id.toString(), token });
 
-          const widgetsData = await dbManager.findOne('widgets', { userId: user._id.toString() });
-
-          if (widgetsData) {
+          const widgets = await Widgets.findOne({ where: { userId: user.dataValues.id }});
+          if (widgets) {
             return {
               success: true,
               data: {
                 token,
-                widgets: widgetsData.widgets,
+                widgets: widgets.widgets,
               },
             };
           }
         }
       }
-
     } catch (err) {
       console.error('Произошла ошибка при обработке запроса: ', err);
 
@@ -67,6 +70,6 @@ export const userDataHandler = {
       };
     }
   },
-  sessionDelete:  async (userId: string, deleteOne: any) => await deleteOne('session', userId)
+  sessionDelete:  async (userId: string) => await Sessions.destroy({ where: {userId}})
 };
 

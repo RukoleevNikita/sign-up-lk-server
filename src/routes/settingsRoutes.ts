@@ -1,18 +1,14 @@
-import express from 'express';
+import { Request, Response, Router } from 'express';
 import { searchServiceSettingsController } from '../controllers/index.js';
-import { IMongoDBManager } from '../service/index.js';
 
-const settingsRoutes = (dbManager: IMongoDBManager) => {
-  const settingsRoutes = express.Router();
+const settingsRoutes = () => {
+  const settingsRoutes = Router();
 
-  settingsRoutes.get('/search-service', (req, res) =>
-    searchServiceSettingsController.getSearchServiceSettings(req, res, dbManager)
+  settingsRoutes.get('/search-service', (req: Request, res: Response) =>
+    searchServiceSettingsController.getSearchServiceSettings(req, res)
   );
-  settingsRoutes.post('/search-service', (req, res) =>
-    searchServiceSettingsController.saveSearchServiceSettings(req, res, dbManager)
-  );
-  settingsRoutes.put('/search-service', (req, res) =>
-    searchServiceSettingsController.updateSearchServiceSettings(req, res, dbManager)
+  settingsRoutes.post('/search-service', (req: Request, res: Response) =>
+    searchServiceSettingsController.saveSearchServiceSettings(req, res)
   );
   return settingsRoutes;
 };

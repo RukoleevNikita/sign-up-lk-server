@@ -1,42 +1,43 @@
 import { Request, Response, NextFunction } from 'express';
 import { checkingCellPhoneNumber } from '../utils/index.js';
-import { IMongoDBManager } from '../service/index.js';
-export const sessionVerificationBeforeAuthenticationMiddleware = (dbManager: IMongoDBManager ) => {
+import { Users, Sessions, Widgets } from '../models/models.js';
+export const sessionVerificationBeforeAuthenticationMiddleware = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validPhoneNumber = checkingCellPhoneNumber(req.headers['phone-number'] as string);
-      if (!validPhoneNumber) {
+
+      const phoneNumber = checkingCellPhoneNumber(req.headers['phone-number'] as string);
+      if (!phoneNumber) {
         return res.status(404).json({
           success: false,
           message: 'Номер телефона не корректен',
           data: null
         });
       }
-      const user = await dbManager.findOne('users', { phoneNumber: validPhoneNumber });
-
+      const user = await Users.findOne({ where: {phoneNumber} });
       if (!user) {
         res.locals = {
           success: false,
           message: 'Пользователь не найден',
-          validPhoneNumber
+          phoneNumber
         };
         next();
       } else {
-        const session = await dbManager.findOne('session', { userId: user._id.toString() });
+        const session = await Sessions.findOne({ where: { userId: user.dataValues.id }});
         if (!session) {
           res.locals = {
             success: false,
             message: 'Сессия не запущена',
-            validPhoneNumber
+            phoneNumber
           };
           next();
         } else {
-          const widgets = await dbManager.findOne('widgets', { userId: user._id.toString() });
+          // const widgets = await Widgets.findOne('widgets', { userId: user._id.toString() });
+          const widgets = await Widgets.findOne({ where: { userId: user.dataValues.id }});
           if (widgets) {
             return res.status(201).json({
               success: true,
               data: {
-                token: session.token,
+                token: session?.token,
                 widgets: widgets.widgets
               },
               message: 'Данные о запущенной сессии.'

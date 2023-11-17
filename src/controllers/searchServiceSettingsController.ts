@@ -13,13 +13,13 @@
 //     telegram: 't.me/v_postnova_nails'
 //   }
 // }
-import { IMongoDBManager } from '../service/index.js';
 import { searchServiceSettingsHandler } from '../core/index.js';
+import { Request, Response } from 'express';
 
-export const getSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
+export const getSearchServiceSettings = async (req: Request, res: Response) => {
   try {
-    const document = await searchServiceSettingsHandler.getSettings(res.locals.id, dbManager.findOne);
-    if (!document) {
+    const data = await searchServiceSettingsHandler.getSettings(res.locals.id);
+    if (!data) {
       res.status(404).json({
         success: false,
         message: 'Документ не найден.',
@@ -28,7 +28,7 @@ export const getSearchServiceSettings = async (req: any, res: any, dbManager: IM
       res.status(200).json({
         success: true,
         token: res.locals.token,
-        data: document,
+        data,
       });
     }
   } catch (error) {
@@ -40,9 +40,9 @@ export const getSearchServiceSettings = async (req: any, res: any, dbManager: IM
   }
 };
 
-export const saveSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
+export const saveSearchServiceSettings = async (req: Request, res: Response) => {
   try {
-    const resultSaving = await searchServiceSettingsHandler.saveSettings(res.locals.id, dbManager.insertOne, req.body.userDataSearchService);
+    const resultSaving = await searchServiceSettingsHandler.saveSettings(res.locals.id, req.body.userDataSearchService);
     if (!resultSaving) {
       res.status(404).json({
         success: false,
@@ -62,24 +62,3 @@ export const saveSearchServiceSettings = async (req: any, res: any, dbManager: I
   }
 };
 
-export const updateSearchServiceSettings = async (req: any, res: any, dbManager: IMongoDBManager) => {
-  try {
-    const updateResult = await searchServiceSettingsHandler.updateSearchServiceSettings(res.locals.id, dbManager.updateOne, req.body);
-    if (updateResult.modifiedCount === 0) {
-      res.status(404).json({
-        success: false,
-        message: 'Документ не был обновлен.',
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      error: 'Внутренняя ошибка сервера.',
-    });
-  }
-};

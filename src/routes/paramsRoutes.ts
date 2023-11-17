@@ -1,10 +1,10 @@
-import express from 'express';
+import { Router, Response, Request } from 'express';
 import { paramsControllers } from '../controllers/index.js';
 
 const paramsRoutes = () => {
-  const paramsRoutes = express.Router();
+  const paramsRoutes = Router();
 
-  paramsRoutes.get('/', (req, res) => paramsControllers.getListServices(req, res));
+  paramsRoutes.get('/', (req: Request, res: Response) => paramsControllers.getListServices(req, res));
 
   return paramsRoutes;
 };
