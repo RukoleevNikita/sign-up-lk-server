@@ -260,154 +260,65 @@
       "PostSearchServiceSettingsRequest": {
         "type": "object",
         "properties": {
-          "userId": {
-            "type": "string",
-            "description": "id пользователя"
+          "activeAccount": {
+            "type": "boolean",
+            "description": "активность пользователя в поисковом сервисе"
           },
-          "searchServiceUserData": {
-            "type": "object",
-            "properties": {
-              "activeAccount": {
-                "type": "boolean",
-                "description": "активность пользователя в поисковом сервисе"
-              },
-              "socialNetwork": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "список социальных сетей пользователя"
-              },
-              "workPhoneNumber": {
-                "type": "string",
-                "description": "рабочий номер телефона пользователя"
-              },
-              "firstName": {
-                "type": "string",
-                "description": "имя пользователя"
-              },
-              "lastName": {
-                "type": "string",
-                "description": "фамилия пользователя"
-              },
-              "userServices": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "service": {
-                      "type": "string"
-                    },
-                    "price": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "description": "список услуг пользователя"
-              },
-              "additionalServices": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "список дополнительных услуг пользователя"
-              },
-              "address": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "адреса пользователя"
-              },
-              "whatsapp": {
-                "type": "string",
-                "description": "номер WhatsApp пользователя"
-              },
-              "telegram": {
-                "type": "string",
-                "description": "ник Telegram пользователя"
-              }
-            }
-          }
-        },
-        "required": [
-          "userId",
-          "searchServiceUserData"
-        ]
-      },
-      "UpdateUserDataRequest": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "id пользователя"
+          "socialNetwork": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "список социальных сетей пользователя"
           },
-          "searchServiceUserData": {
-            "type": "object",
-            "properties": {
-              "activeAccount": {
-                "type": "boolean"
-              },
-              "socialNetwork": {
-                "type": "array",
-                "items": {
+          "workPhoneNumber": {
+            "type": "string",
+            "description": "рабочий номер телефона пользователя"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "имя пользователя"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "фамилия пользователя"
+          },
+          "userServices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "service": {
+                  "type": "string"
+                },
+                "price": {
                   "type": "string"
                 }
-              },
-              "workPhoneNumber": {
-                "type": "string"
-              },
-              "firstName": {
-                "type": "string"
-              },
-              "lastName": {
-                "type": "string"
-              },
-              "userServices": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "service": {
-                      "type": "string"
-                    },
-                    "price": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "additionalServices": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "address": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "whatsapp": {
-                "type": "string"
-              },
-              "telegram": {
-                "type": "string"
               }
-            }
-          }
-        },
-        "required": [
-          "userId",
-          "searchServiceUserData"
-        ]
-      },
-      "UpdateUserDataResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
+            },
+            "description": "список услуг пользователя"
+          },
+          "additionalServices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "список дополнительных услуг пользователя"
+          },
+          "address": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "адреса пользователя"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "номер WhatsApp пользователя"
+          },
+          "telegram": {
+            "type": "string",
+            "description": "ник Telegram пользователя"
           }
         }
       }
@@ -871,6 +782,15 @@
           "Settings"
         ],
         "summary": "добавление данных пользователя",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "description": "Токен авторизации пользователя",
+            "type": "string"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -886,14 +806,14 @@
             "description": "успешное добавление данных пользователя",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PostSearchServiceSettingsResponse"
+                "example": {
+                  "success": true
                 }
               }
             }
           },
           "404": {
-            "description": "Не удалось добавить данные пользователя",
+            "description": "Ошибка при сохранении настроек пользователя",
             "content": {
               "application/json": {
                 "schema": {
@@ -902,45 +822,43 @@
                     "success": {
                       "type": "boolean",
                       "description": "Успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Ошибка при сохранении настроек пользователя."
                     }
                   },
                   "example": {
-                    "success": false
+                    "success": false,
+                    "message": "Ошибка при сохранении настроек пользователя."
                   }
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Settings"
-        ],
-        "summary": "обновление данных пользователя",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserDataRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "успешное обновление данных",
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateUserDataResponse"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Внутренняя ошибка сервера"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Внутренняя ошибка сервера."
+                  }
                 }
               }
             }
-          },
-          "404": {
-            "description": "пользователь с указанным id не найден"
           }
         }
       }

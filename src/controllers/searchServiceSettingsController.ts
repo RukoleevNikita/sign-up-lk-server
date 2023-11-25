@@ -42,7 +42,9 @@ export const getSearchServiceSettings = async (req: Request, res: Response) => {
 
 export const saveSearchServiceSettings = async (req: Request, res: Response) => {
   try {
-    const resultSaving = await searchServiceSettingsHandler.saveSettings(res.locals.id, req.body.userDataSearchService);
+    console.log('req.body', req.body);
+    // написать проерку на req.body иначе если нет в req.body {} все ровно придет true, надо отправить ответ на фронт что данных нет
+    const resultSaving = await searchServiceSettingsHandler.saveSettings(res.locals.id, req.body);
     if (!resultSaving) {
       res.status(404).json({
         success: false,
