@@ -19,7 +19,7 @@ const errorHandler: ErrorRequestHandler = (error: Error, req, res, next) => {
 };
 app.use(errorHandler);
 app.use('/api/authentication', authenticationRoutes());
-app.use('/api/settings', checkAuthenticationMiddleware(), settingsRoutes()); // написать проверку авторизации
+app.use('/api/settings', checkAuthenticationMiddleware(), settingsRoutes());
 app.use('/api/get-params', paramsRoutes()); // написать проверку авторизации
 // app.use('/main', isAuthenticated, protectedRouter(io));
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());

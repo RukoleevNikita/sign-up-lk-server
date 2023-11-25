@@ -11,57 +11,51 @@
  *     GetSearchServiceSettingsResponse:
  *       type: object
  *       properties:
- *         activeAccount:
+ *         success:
  *           type: boolean
- *           description: активность пользователя в поисковом сервисе
- *         socialNetwork:
- *           type: array
- *           items:
- *             type: string
- *           description: список социальных сетей пользователя
- *         workPhoneNumber:
+ *         token:
  *           type: string
- *           description: рабочий номер телефона пользователя
- *         firstName:
- *           type: string
- *           description: имя пользователя
- *         lastName:
- *           type: string
- *           description: фамилия пользователя
- *         userServices:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               service:
+ *         data:
+ *           type: object
+ *           properties:
+ *             activeAccount:
+ *               type: boolean
+ *             socialNetwork:
+ *               type: array
+ *               items:
  *                 type: string
- *               price:
+ *             workPhoneNumber:
+ *               type: string
+ *               uniqueItems: true
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             userServices:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   service:
+ *                     type: string
+ *                   price:
+ *                     type: string
+ *             additionalServices:
+ *               type: array
+ *               items:
  *                 type: string
- *             description: список услуг пользователя
- *         additionalServices:
- *           type: array
- *           items:
- *             type: string
- *           description: список дополнительных услуг пользователя
- *         address:
- *           type: array
- *           items:
- *             type: string
- *           description: рабочий адрес
- *         whatsapp:
- *           type: string
- *           description: номер WhatsApp пользователя
- *         telegram:
- *           type: string
- *           description: ник еelegram пользователя
- *     GetSearchServiceSettingsRequest:
- *       type: object
- *       properties:
- *         userId:
- *           type: string
- *           description: id пользователя
- *       required:
- *         - userId
+ *             address:
+ *               type: array
+ *               items:
+ *                 type: string
+ *             whatsapp:
+ *               type: string
+ *             telegram:
+ *               type: string
+ *             typeUser:
+ *               type: array
+ *               items:
+ *                 type: integer
  */
 
 /**
@@ -69,14 +63,19 @@
  * /api/settings/search-service:
  *   get:
  *     tags: [Settings]
- *     summary: получение данных пользователя по ID
+ *     summary: получение данных пользователя
  *     parameters:
- *       - in: query
- *         name: userId
+ *       - in: header
+ *         name: token
  *         required: true
- *         schema:
- *           type: string
- *         description: id пользователя
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *             required:
+ *               - token
  *     responses:
  *       200:
  *         description: успешный запрос
@@ -85,7 +84,7 @@
  *             schema:
  *               $ref: '#/components/schemas/GetSearchServiceSettingsResponse'
  *       404:
- *         description: Пользователь с указанным id не найден
+ *         description: Документ не найден.
  *         content:
  *           application/json:
  *             schema:
@@ -94,8 +93,28 @@
  *                 success:
  *                   type: boolean
  *                   description: Успешность запроса
+ *                 message:
+ *                   type: string
+ *                   description: Документ не найден
  *               example:
  *                 success: false
+ *                 message: Документ не найден.
+ *       500:
+ *         description: Внутренняя ошибка сервера.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Успешность запроса
+ *                 message:
+ *                   type: string
+ *                   description: Внутренняя ошибка сервера
+ *               example:
+ *                 success: false
+ *                 message: Внутренняя ошибка сервера.
  */
 
 /**
