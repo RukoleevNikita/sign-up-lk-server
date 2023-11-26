@@ -56,28 +56,23 @@ const SearchServiceSettings = sequelize.define(
   'searchServiceSettings',
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    userDataSearchService: {
-      type: DataTypes.JSONB,
-      defaultValue: {
-        activeAccount: { type: DataTypes.BOOLEAN },
-        socialNetwork: { type: DataTypes.ARRAY(DataTypes.TEXT) },
-        workPhoneNumber: { type: DataTypes.TEXT, unique: true },
-        firstName: { type: DataTypes.TEXT },
-        lastName: { type: DataTypes.TEXT },
-        userServices: {
-          type: DataTypes.ARRAY(DataTypes.JSONB),
-          defaultValue: [
-            { service: DataTypes.TEXT, price: DataTypes.TEXT },
-            { service: DataTypes.TEXT, price: DataTypes.TEXT }
-          ]
-        },
-        additionalServices: { type: DataTypes.ARRAY(DataTypes.TEXT) },
-        address: { type: DataTypes.ARRAY(DataTypes.TEXT) },
-        whatsapp: { type: DataTypes.TEXT },
-        telegram: { type: DataTypes.TEXT },
-        typeUser: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
-      }
+    activeAccount: { type: DataTypes.BOOLEAN },
+    socialNetwork: { type: DataTypes.ARRAY(DataTypes.TEXT) },
+    workPhoneNumber: { type: DataTypes.TEXT, unique: true },
+    firstName: { type: DataTypes.TEXT },
+    lastName: { type: DataTypes.TEXT },
+    userServices: {
+      type: DataTypes.ARRAY(DataTypes.JSONB),
+      defaultValue: [
+        { service: DataTypes.TEXT, price: DataTypes.TEXT },
+        { service: DataTypes.TEXT, price: DataTypes.TEXT }
+      ]
     },
+    additionalServices: { type: DataTypes.ARRAY(DataTypes.TEXT) },
+    address: { type: DataTypes.ARRAY(DataTypes.TEXT) },
+    whatsapp: { type: DataTypes.TEXT },
+    telegram: { type: DataTypes.TEXT },
+    typeUser: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
   }
 );
 const ImageGallery = sequelize.define(

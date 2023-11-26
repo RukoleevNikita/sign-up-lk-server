@@ -1,3 +1,2 @@
-// export { default as userDataHandler } from './userDataHandler.js';
 export { userDataHandler } from './userDataHandler.js';
-export { searchServiceSettingsHandler } from './searchServiceSettingsHandler.js';
+export { searchServiceSettingsHandler } from './searchServiceSettings/searchServiceSettingsHandler.js';

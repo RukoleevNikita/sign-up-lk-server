@@ -1,5 +1,6 @@
 import { tokenController, getWidgets } from '../utils/index.js';
 import { Users, Sessions, Widgets } from '../models/models.js';
+import { Model } from 'sequelize';
 
 export const userDataHandler = {
   sessionStart:  async (phoneNumber: string) => {
