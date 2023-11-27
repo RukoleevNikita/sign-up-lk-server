@@ -6,6 +6,7 @@ import { createServer } from 'http';
 import swaggerDocs from './swagger/swagger.js';
 import { settingsRoutes, authenticationRoutes, paramsRoutes } from './routes/index.js';
 import { checkAuthenticationMiddleware } from './middleware/index.js';
+import calendarRouter from './routes/calendarRouter.js';
 
 
 const app: Express = express();
@@ -20,7 +21,7 @@ app.use(errorHandler);
 app.use('/api/authentication', authenticationRoutes());
 app.use('/api/settings', checkAuthenticationMiddleware(), settingsRoutes());
 app.use('/api/get-params', checkAuthenticationMiddleware(), paramsRoutes());
-// app.use('/api/calendar', checkAuthenticationMiddleware(), calendarRouter(io));
+app.use('/api/calendar', checkAuthenticationMiddleware(), calendarRouter());
 // app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());
 httpServer.listen(4445, async () => {
   try {

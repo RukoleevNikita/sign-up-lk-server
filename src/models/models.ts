@@ -31,8 +31,7 @@ const CalendarEvents = sequelize.define(
         service: { type: DataTypes.ARRAY(DataTypes.NUMBER) },
         start_time: { type: DataTypes.DATE },
         end_time: { type: DataTypes.DATE },
-        notes: { type: DataTypes.STRING },
-
+        notes: { type: DataTypes.TEXT },
       }
     }
 

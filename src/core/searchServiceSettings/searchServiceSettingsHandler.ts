@@ -5,13 +5,13 @@ import { UserDataSearchService } from './interfaces.js';
 export const searchServiceSettingsHandler = {
   getSettings: async (userId: string): Promise<UserDataSearchService | null> => {
     try {
-      const searchServiceSettings: Model<UserDataSearchService> | null = await SearchServiceSettings.findOne({
+      const data: Model<UserDataSearchService> | null = await SearchServiceSettings.findOne({
         where: { userId },
         attributes: {
           exclude: ['userId', 'createdAt', 'updatedAt', 'id']
         }
       });
-      return searchServiceSettings?.dataValues ?? null;
+      return data?.dataValues ?? null;
     } catch (err) {
       console.error('Произошла ошибка при обработке запроса: ', err);
       return null;
@@ -19,13 +19,13 @@ export const searchServiceSettingsHandler = {
   },
   saveSettings: async (currentId: string, data: UserDataSearchService): Promise<boolean> => {
     try {
-      const existingSearchSettings: Model<UserDataSearchService> | null = await SearchServiceSettings.findOne({
+      const settingsData: Model<UserDataSearchService> | null = await SearchServiceSettings.findOne({
         where: { userId: currentId },
         attributes: {
           exclude: ['createdAt', 'updatedAt']
         }
       });
-      if (!existingSearchSettings) {
+      if (!settingsData) {
         await SearchServiceSettings.create( {
           userId: currentId,
           activeAccount: data.activeAccount,
@@ -42,12 +42,12 @@ export const searchServiceSettingsHandler = {
         });
         return true;
       } else {
-        const { userId, id, ...settingsObject } = existingSearchSettings?.dataValues;
+        const { userId, id, ...settingsObject } = settingsData?.dataValues;
         if (!isDeepStrictEqual(data, settingsObject)) {
           Object.entries(data).forEach(([key, value]) => {
-            existingSearchSettings.set(key as keyof UserDataSearchService, value);
+            settingsData.set(key as keyof UserDataSearchService, value);
           });
-          await existingSearchSettings.save();
+          await settingsData.save();
           return true;
         }
         return true;
