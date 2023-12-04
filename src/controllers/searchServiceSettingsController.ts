@@ -1,87 +1,51 @@
-// {
-//   id: '64dd89340a7a3c2caba604d2',
-//   userDataSearchService: {
-//     activeAccount: true,
-//     socialNetwork: [ 'instagram/link', 'vk/name' ],
-//     workPhoneNumber: '89136553626',
-//     firstName: 'Никита',
-//     lastName: 'Руколеев',
-//     userServices: [ [Object], [Object] ],
-//     additionalServices: [ 'Аппаратный маникюр', 'Классический маникюр' ],
-//     address: [ 'ТОК Флагман 4 этаж офис 422' ],
-//     whatsapp: 'wa.me/79131465028',
-//     telegram: 't.me/v_postnova_nails'
-//   }
-// }
-export const getSearchServiceSettings = async (req: any, res: any, findOne: any) => {
-  try {
-    const searchServiceUserData = req.body;
-    const userId = searchServiceUserData.userId;
-    const doc = await findOne('searchservicesettings', { userId });
+import { searchServiceSettingsHandler } from '../core/index.js';
+import { Request, Response } from 'express';
+import { UserDataSearchService } from '../core/searchServiceSettings/interfaces.js';
 
-    if (!doc) {
+export const getSearchServiceSettings = async (req: Request, res: Response) => {
+  try {
+    const data: UserDataSearchService | null = await searchServiceSettingsHandler.getSettings(res.locals.id);
+    if (!data) {
       res.status(404).json({
         success: false,
-        error: 'документ не найден',
+        message: 'Документ не найден.',
       });
     } else {
       res.status(200).json({
         success: true,
-        msg: doc,
+        token: res.locals.token,
+        data,
       });
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      error: 'Internal Server Error',
+      message: 'Внутренняя ошибка сервера.',
     });
   }
 };
 
-export const saveSearchServiceSettings = async (req: any, res: any, insertOne: any) => {
+export const saveSearchServiceSettings = async (req: Request, res: Response) => {
   try {
-    const { userId, userDataSearchService } = req.body;
-
-    const result = await insertOne('searchservicesettings', {
-      userId,
-      userDataSearchService,
-    });
-
-    if (result) {
-      res.status(200).json({
-        success: true,
-      });
-    } else {
+    // написать проерку на req.body иначе если нет в req.body {} все ровно придет true, надо отправить ответ на фронт что данных нет
+    const resultSaving = await searchServiceSettingsHandler.saveSettings(res.locals.id, req.body);
+    if (!resultSaving) {
       res.status(404).json({
         success: false,
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      error: error,
-    });
-  }
-};
-
-export const updateSearchServiceSettings = async (req: any, res: any, updateOne: any, findOne: any) => {
-  try {
-    const updatedDoc = await updateOne('searchservicesettings', { userId: req.body.userId }, { $set: req.body });
-    if (updatedDoc !== undefined) {
-      res.status(200).json({
-        success: true,
+        message: 'Произошла ошибка при обработке запроса.',
       });
     } else {
-      res.status(500).json({
-        success: false,
-        error: 'документ не был обновлен',
+      res.status(200).json({
+        success: true,
       });
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      error: 'Internal Server Error',
+      message: 'Внутренняя ошибка сервера.',
     });
   }
 };
+

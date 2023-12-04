@@ -1,0 +1,1 @@
+export { checkAuthenticationMiddleware } from './checkAuthenticationMiddleware.js';

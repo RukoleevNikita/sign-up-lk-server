@@ -6,31 +6,99 @@
   },
   "components": {
     "schemas": {
-      "AuthorizationСontrol": {
+      "SendMessageCode": {
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "успешно ли выполнен запрос"
           },
-          "msg": {
+          "data": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "description": "id польтзователя"
-              },
               "token": {
                 "type": "string",
-                "description": "token пользователя"
+                "description": "токен сессии"
+              },
+              "widgets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "widgetId": {
+                      "type": "integer",
+                      "description": "идентификатор виджета"
+                    },
+                    "active": {
+                      "type": "boolean",
+                      "description": "активен ли виджет"
+                    },
+                    "widgetName": {
+                      "type": "string",
+                      "description": "название виджета"
+                    },
+                    "_id": {
+                      "type": "string",
+                      "description": "идентификатор виджета"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CheckMessageCode": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "успешно ли выполнен запрос"
+          },
+          "message": {
+            "type": "string",
+            "description": "сообщение о успешном запросе"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "description": "токен сессии"
+              },
+              "widgets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "widgetId": {
+                      "type": "integer",
+                      "description": "идентификатор виджета"
+                    },
+                    "active": {
+                      "type": "boolean",
+                      "description": "активен ли виджет"
+                    },
+                    "widgetName": {
+                      "type": "string",
+                      "description": "название виджета"
+                    },
+                    "_id": {
+                      "type": "string",
+                      "description": "идентификатор виджета"
+                    }
+                  }
+                }
               }
             }
           }
         },
         "example": {
           "success": "true,",
-          "msg": {
-            "id": "64b299cb140266a6294d2c4e",
-            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f"
+          "message": "Код успешно прошел валидацию.",
+          "data": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUyMDgsImlhdCI6MTY4OTQyNjM3OSwiZXhwIjoxNjkyMDE4Mzc5f",
+            "widgets": []
           }
         }
       },
@@ -108,6 +176,90 @@
       "GetSearchServiceSettingsResponse": {
         "type": "object",
         "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "activeAccount": {
+                "type": "boolean"
+              },
+              "socialNetwork": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "workPhoneNumber": {
+                "type": "string",
+                "uniqueItems": true
+              },
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "userServices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "service": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalServices": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "address": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "whatsapp": {
+                "type": "string"
+              },
+              "telegram": {
+                "type": "string"
+              },
+              "typeUser": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PostSearchServiceSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "success": true
+        }
+      },
+      "PostSearchServiceSettingsRequest": {
+        "type": "object",
+        "properties": {
           "activeAccount": {
             "type": "boolean",
             "description": "активность пользователя в поисковом сервисе"
@@ -142,9 +294,9 @@
                 "price": {
                   "type": "string"
                 }
-              },
-              "description": "список услуг пользователя"
-            }
+              }
+            },
+            "description": "список услуг пользователя"
           },
           "additionalServices": {
             "type": "array",
@@ -158,7 +310,7 @@
             "items": {
               "type": "string"
             },
-            "description": "рабочий адрес"
+            "description": "адреса пользователя"
           },
           "whatsapp": {
             "type": "string",
@@ -166,256 +318,268 @@
           },
           "telegram": {
             "type": "string",
-            "description": "ник еelegram пользователя"
-          }
-        }
-      },
-      "GetSearchServiceSettingsRequest": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "id пользователя"
-          }
-        },
-        "required": [
-          "userId"
-        ]
-      },
-      "PostSearchServiceSettingsResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          }
-        },
-        "example": {
-          "success": true
-        }
-      },
-      "PostSearchServiceSettingsRequest": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "id пользователя"
-          },
-          "searchServiceUserData": {
-            "type": "object",
-            "properties": {
-              "activeAccount": {
-                "type": "boolean",
-                "description": "активность пользователя в поисковом сервисе"
-              },
-              "socialNetwork": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "список социальных сетей пользователя"
-              },
-              "workPhoneNumber": {
-                "type": "string",
-                "description": "рабочий номер телефона пользователя"
-              },
-              "firstName": {
-                "type": "string",
-                "description": "имя пользователя"
-              },
-              "lastName": {
-                "type": "string",
-                "description": "фамилия пользователя"
-              },
-              "userServices": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "service": {
-                      "type": "string"
-                    },
-                    "price": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "description": "список услуг пользователя"
-              },
-              "additionalServices": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "список дополнительных услуг пользователя"
-              },
-              "address": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "адреса пользователя"
-              },
-              "whatsapp": {
-                "type": "string",
-                "description": "номер WhatsApp пользователя"
-              },
-              "telegram": {
-                "type": "string",
-                "description": "ник Telegram пользователя"
-              }
-            }
-          }
-        },
-        "required": [
-          "userId",
-          "searchServiceUserData"
-        ]
-      },
-      "UpdateUserDataRequest": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "id пользователя"
-          },
-          "searchServiceUserData": {
-            "type": "object",
-            "properties": {
-              "activeAccount": {
-                "type": "boolean"
-              },
-              "socialNetwork": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "workPhoneNumber": {
-                "type": "string"
-              },
-              "firstName": {
-                "type": "string"
-              },
-              "lastName": {
-                "type": "string"
-              },
-              "userServices": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "service": {
-                      "type": "string"
-                    },
-                    "price": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "additionalServices": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "address": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "whatsapp": {
-                "type": "string"
-              },
-              "telegram": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "required": [
-          "userId",
-          "searchServiceUserData"
-        ]
-      },
-      "UpdateUserDataResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
+            "description": "ник Telegram пользователя"
           }
         }
       }
     }
   },
   "paths": {
-    "api/authorization-control/": {
-      "get": {
+    "/api/authentication/send-message": {
+      "post": {
         "tags": [
-          "Authorization control"
+          "Authentication"
         ],
-        "summary": "запрос к бд для проверки авторизации",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "id"
-                ]
-              }
+        "summary": "отправка проверочного кода",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "phone-number",
+            "required": true,
+            "schema": {
+              "type": "string"
             },
-            "description": "id пользователя"
+            "description": "номер телефона клиента",
+            "examples": {
+              "phone-number": {
+                "value": "79136553626"
+              }
+            }
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "success",
+            "description": "проверочный код успешно отправлен",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorizationСontrol"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешно ли выполнен запрос"
+                    },
+                    "data": {
+                      "type": null
+                    }
+                  },
+                  "example": {
+                    "success": true,
+                    "data": null
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "сессия была запущена ранее (данные о запущенной сессии)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendMessageCode"
                 }
               }
             }
           },
           "404": {
-            "description": "Не удалось проверить авторизацию пользователя"
+            "description": "номер телефона не корректен/произошла ошибка при обработке запроса",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Номер телефона не корректен."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "превышен лимит запросов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Превышен лимит запросов. Пожалуйста, подождите."
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/authorization-control/": {
+    "/api/authentication/check-message": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "проверка введенного кода",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "phone-number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "номер телефона клиента",
+            "examples": {
+              "phone-number": {
+                "value": "79136553626"
+              }
+            }
+          },
+          {
+            "in": "header",
+            "name": "verification-code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "введенный код верификации",
+            "examples": {
+              "verification-code": {
+                "value": "1234"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "проверочный код успешно отправлен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckMessageCode"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "данные не прошли валидацию",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Данные не прошли валидацию."
+                  }
+                }
+              }
+            }
+          },
+          "423": {
+            "description": "введен не верный код",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Введен не верный код."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "превышен лимит запросов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Превышен лимит запросов. Пожалуйста, подождите."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authentication/": {
       "delete": {
         "tags": [
-          "Authorization control"
+          "Authentication"
         ],
         "summary": "запрос на удаление авторизации",
-        "requestBody": {
-          "required": true,
-          "content": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "required": true,
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "token": {
                     "type": "string"
                   }
                 },
                 "required": [
-                  "id"
+                  "token"
                 ]
               }
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Успешное удаление",
@@ -427,8 +591,53 @@
               }
             }
           },
+          "400": {
+            "description": "не валидный токен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Не валидный токен."
+                  }
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Сессии с таким id не существует"
+            "description": "сессии не существует",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "сообщение ошибки"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Сессии не существует."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -486,16 +695,25 @@
         "tags": [
           "Settings"
         ],
-        "summary": "gолучение данных пользователя по ID",
+        "summary": "получение данных пользователя",
         "parameters": [
           {
-            "in": "query",
-            "name": "userId",
+            "in": "header",
+            "name": "token",
             "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "id пользователя"
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
           }
         ],
         "responses": {
@@ -510,7 +728,7 @@
             }
           },
           "404": {
-            "description": "Пользователь с указанным id не найден",
+            "description": "Документ не найден.",
             "content": {
               "application/json": {
                 "schema": {
@@ -519,10 +737,39 @@
                     "success": {
                       "type": "boolean",
                       "description": "Успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Документ не найден"
                     }
                   },
                   "example": {
-                    "success": false
+                    "success": false,
+                    "message": "Документ не найден."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Внутренняя ошибка сервера"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Внутренняя ошибка сервера."
                   }
                 }
               }
@@ -535,6 +782,15 @@
           "Settings"
         ],
         "summary": "добавление данных пользователя",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "description": "Токен авторизации пользователя",
+            "type": "string"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -550,14 +806,14 @@
             "description": "успешное добавление данных пользователя",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PostSearchServiceSettingsResponse"
+                "example": {
+                  "success": true
                 }
               }
             }
           },
           "404": {
-            "description": "Не удалось добавить данные пользователя",
+            "description": "Ошибка при сохранении настроек пользователя",
             "content": {
               "application/json": {
                 "schema": {
@@ -566,45 +822,43 @@
                     "success": {
                       "type": "boolean",
                       "description": "Успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Ошибка при сохранении настроек пользователя."
                     }
                   },
                   "example": {
-                    "success": false
+                    "success": false,
+                    "message": "Ошибка при сохранении настроек пользователя."
                   }
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Settings"
-        ],
-        "summary": "обновление данных пользователя",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserDataRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "успешное обновление данных",
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateUserDataResponse"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Успешность запроса"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Внутренняя ошибка сервера"
+                    }
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Внутренняя ошибка сервера."
+                  }
                 }
               }
             }
-          },
-          "404": {
-            "description": "пользователь с указанным id не найден"
           }
         }
       }
@@ -612,8 +866,8 @@
   },
   "tags": [
     {
-      "name": "Authorization control",
-      "description": "проверить/удалить авторизацию пользователя"
+      "name": "Authentication",
+      "description": "управление авторизацией клиента"
     },
     {
       "name": "Request for specialization parameters",
