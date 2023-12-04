@@ -2,6 +2,8 @@ import fs from 'fs';
 import { Express, Request, Response } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import path from 'path';
+const currentModulePath = new URL(import.meta.url).pathname;
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -12,8 +14,13 @@ const options: swaggerJsdoc.Options = {
     },
     components: {},
   },
-  //   apis: ['../routes/*.ts', './src/schema/*.ts'],
-  apis: ['./src/routes/*.ts'],
+  // apis: ['./src/routes/*.ts'],
+  apis: [
+    path.join(path.dirname(currentModulePath), 'docs', 'authentication-doc.ts'),
+    path.join(path.dirname(currentModulePath), 'docs', 'params-doc.ts'),
+    path.join(path.dirname(currentModulePath), 'docs', 'settings-doc.ts'),
+
+  ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

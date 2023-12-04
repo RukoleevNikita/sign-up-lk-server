@@ -7,13 +7,15 @@ import express from 'express';
 export const authenticationSocket = (io: any, authenticationController: any, findOne: any, insertOne: any) => {
   const router = express.Router();
   const authSocket = io.of('/authentication');
+  let phoneNumber: string | boolean;
+  let verificationCode: number;
   authSocket.on('connection', (socket: any) => {
     // client -> server - connection
     socket.on('phone', (data: any) => {
       // const verificationCode: number = generateVerificationCode();
-      const verificationCode = 1234; // на время разработки
+      verificationCode = 1234; // на время разработки
       // client -> server - phone
-      const phoneNumber = checkingCellPhoneNumber(data.phone);
+      phoneNumber = checkingCellPhoneNumber(data.phone);
       // провекра сессии перед отправкой проверочного кода
       authenticationController
         .sessionVerificationBeforeAuthentication(phoneNumber, findOne)
@@ -55,29 +57,28 @@ export const authenticationSocket = (io: any, authenticationController: any, fin
         socket.emit('authenticationProcess', { success: true });
       }, 1000);
       console.log(verificationCode);
-
-      // переписать, возвращать на клиент ошибку
-      socket.on('verificationCode', (data: any) => {
-        // проверка кода от client -> server - verificationCode
-        if (Number(verificationCode) !== Number(data.code)) {
-          // обработка ошибки с отправкой на клиент
-          socket.emit('verificationCode', { success: false });
-          console.log('введен не верный код');
-          // return res.status(400).
-        } else {
-          socket.emit('verificationCode', { success: true });
-          authenticationController
-            .authentication(phoneNumber, verificationCode * 4, findOne, insertOne, () => {
-              // тут выполняеться логика после функции UserController
-            })
-            .then((res: object) => {
-              console.log('routes ', res);
-              res === null
-                ? socket.emit('authToken', { success: false, userData: res }) // userData: null
-                : socket.emit('authToken', { success: true, userData: res }); // userData: {id: '', token: ''}
-            });
-        }
-      });
+    });
+    // переписать, возвращать на клиент ошибку
+    socket.on('verificationCode', (data: any) => {
+      // проверка кода от client -> server - verificationCode
+      if (Number(verificationCode) !== Number(data.code)) {
+        // обработка ошибки с отправкой на клиент
+        socket.emit('verificationCode', { success: false });
+        console.log('введен не верный код');
+        // return res.status(400).
+      } else {
+        socket.emit('verificationCode', { success: true });
+        authenticationController
+          .authentication(phoneNumber, verificationCode * 4, findOne, insertOne, () => {
+            // тут выполняеться логика после функции UserController
+          })
+          .then((res: object) => {
+            console.log('routes ', res);
+            res === null
+              ? socket.emit('authToken', { success: false, userData: res }) // userData: null
+              : socket.emit('authToken', { success: true, userData: res }); // userData: {id: '', token: ''}
+          });
+      }
     });
 
     socket.on('disconnect', () => {

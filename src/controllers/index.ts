@@ -1,3 +1,7 @@
-export * as authenticationController from './authenticationController.js';
-export * as phoneNumberVerification from './cellPhoneNumberController.js';
-export * as profileController from './profileController.js';
+// export * as authenticationController from './authenticationController.js';
+export { authentication } from './authenticationController.js';
+export * as searchServiceSettingsController from './searchServiceSettingsController.js';
+export * as paramsControllers from './paramsControllers.js';
+export * as calendarController from './calendarController.js';
+
+
