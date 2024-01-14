@@ -73,17 +73,19 @@
  *         schema:
  *           type: string
  *         required: true
- *       - in: body
- *         name: params
- *         schema:
- *           type: array
- *           items:
- *             type: integer
- *             enum: [0, 1, 2]
- *         style: form
- *         explode: false
- *         description: массив цифр где 0-маникюр, 1-педикюр, 2-визажист
- *         example: [0, 1, 2]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             params:
+ *               type: array
+ *               items:
+ *                 type: integer
+ *                 enum: [0, 1, 2]
+ *           example:
+ *             params: [0, 1, 2]
  *     responses:
  *       200:
  *         description: успешный запрос
