@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 export const getListServices = async (req: Request, res: Response) => {
   try {
-    const objParams = req.query.params.split(',').params.map((el: number) => getSpecialization(Number(el)));
+    const objParams = req.query.params.split(',').map((el: number) => getSpecialization(Number(el)));
     res.status(200).json({
       msg: objParams,
     });
