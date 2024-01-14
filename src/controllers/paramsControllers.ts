@@ -3,12 +3,10 @@ import { Request, Response } from 'express';
 
 export const getListServices = async (req: Request, res: Response) => {
   try {
-    console.log(req.query);
-    console.log(req.body);
-    // const objParams = req.query.params.map((el: number) => getSpecialization(el));
-    // res.status(200).json({
-    //   msg: objParams,
-    // });
+    const objParams = req.query.params.map((el: number) => getSpecialization(el));
+    res.status(200).json({
+      msg: objParams,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({

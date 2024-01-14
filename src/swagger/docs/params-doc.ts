@@ -69,23 +69,22 @@
  *     summary: получить параметры при выборе специализации
  *     parameters:
  *       - in: header
- *         name: token
+ *         name: Authorization
  *         schema:
  *           type: string
  *         required: true
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: array
- *             params:
- *               type: array
- *               items:
- *                 type: integer
- *                 enum: [0, 1, 2]
- *           example:
- *             params: [0, 1, 2]
+ *         description: Токен пользователя (введите в формате Bearer {ваш токен})
+ *       - in: query
+ *         name: params
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: integer
+ *             enum: [0, 1, 2]
+ *         style: form
+ *         explode: false
+ *         description: Массив цифр, где 0 - маникюр, 1 - педикюр, 2 - визажист
+ *         example: [0, 1, 2]
  *     responses:
  *       200:
  *         description: успешный запрос
