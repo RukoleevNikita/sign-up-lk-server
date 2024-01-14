@@ -651,7 +651,7 @@
         "parameters": [
           {
             "in": "header",
-            "name": "Authorization",
+            "name": "token",
             "schema": {
               "type": "string"
             },
