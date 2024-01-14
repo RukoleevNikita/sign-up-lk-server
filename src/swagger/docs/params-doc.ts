@@ -74,7 +74,7 @@
  *           type: string
  *         required: true
  *       - in: query
- *         name: numbers
+ *         name: params
  *         schema:
  *           type: array
  *           items:

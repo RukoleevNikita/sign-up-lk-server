@@ -659,7 +659,7 @@
           },
           {
             "in": "query",
-            "name": "numbers",
+            "name": "params",
             "schema": {
               "type": "array",
               "items": {
