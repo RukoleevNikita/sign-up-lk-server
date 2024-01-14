@@ -68,6 +68,11 @@
  *     tags: [Request for specialization parameters]
  *     summary: получить параметры при выборе специализации
  *     parameters:
+ *       - in: header
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
  *       - in: query
  *         name: numbers
  *         schema:
