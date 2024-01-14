@@ -69,7 +69,7 @@
  *     summary: получить параметры при выборе специализации
  *     parameters:
  *       - in: header
- *         name: Authorization
+ *         name: token
  *         schema:
  *           type: string
  *         required: true
