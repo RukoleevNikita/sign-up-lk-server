@@ -73,7 +73,7 @@
  *         schema:
  *           type: string
  *         required: true
- *       - in: query
+ *       - in: body
  *         name: params
  *         schema:
  *           type: array
