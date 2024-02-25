@@ -1,4 +1,5 @@
 export default (service: number) => {
+  console.log('service ', service);
   switch (service) {
   case 0:
     /* 

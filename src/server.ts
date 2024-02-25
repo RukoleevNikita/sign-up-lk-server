@@ -22,7 +22,6 @@ app.use('/api/authentication', authenticationRoutes());
 app.use('/api/settings', checkAuthenticationMiddleware(), settingsRoutes());
 app.use('/api/get-params', checkAuthenticationMiddleware(), paramsRoutes());
 app.use('/api/calendar', checkAuthenticationMiddleware(), calendarRouter());
-// app.use('/api/user-settings', isAuthenticated, settingsControlRoutes());
 httpServer.listen(4445, async () => {
   try {
     await sequelize.authenticate();

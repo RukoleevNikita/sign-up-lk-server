@@ -73,7 +73,7 @@
  *         schema:
  *           type: string
  *         required: true
- *         description: Токен пользователя (введите в формате Bearer {ваш токен})
+ *         description: Токен пользователя
  *       - in: query
  *         name: params
  *         schema:

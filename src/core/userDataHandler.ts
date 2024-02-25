@@ -41,7 +41,13 @@ export const userDataHandler = {
             return {
               success: true,
               data: {
+                // FIXME костыль по типизации токена
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 token: session.token,
+                // FIXME костыль по типизации токена
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 widgets: widgets.widgets
               }
             };
@@ -56,6 +62,9 @@ export const userDataHandler = {
               success: true,
               data: {
                 token,
+                // FIXME костыль по типизации токена
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 widgets: widgets.widgets,
               },
             };
