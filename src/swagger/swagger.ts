@@ -3,7 +3,8 @@ import { Express, Request, Response } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import path from 'path';
-const currentModulePath = new URL(import.meta.url).pathname;
+// const currentModulePath = new URL(import.meta.url).pathname;
+const currentModulePath = path.join(__dirname, '..');
 
 const options: swaggerJsdoc.Options = {
   definition: {

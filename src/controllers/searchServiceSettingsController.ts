@@ -1,6 +1,6 @@
-import { searchServiceSettingsHandler } from '../core/index.js';
+import { searchServiceSettingsHandler } from '../core/index';
 import { Request, Response } from 'express';
-import { UserDataSearchService } from '../core/searchServiceSettings/interfaces.js';
+import { UserDataSearchService } from '../core/searchServiceSettings/interfaces';
 
 export const getSearchServiceSettings = async (req: Request, res: Response) => {
   try {

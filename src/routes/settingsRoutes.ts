@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { searchServiceSettingsController } from '../controllers/index.js';
+import { searchServiceSettingsController } from '../controllers/index';
 
 const settingsRoutes = () => {
   const settingsRoutes = Router();

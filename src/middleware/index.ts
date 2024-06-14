@@ -1,1 +1,1 @@
-export { checkAuthenticationMiddleware } from './checkAuthenticationMiddleware.js';
+export { checkAuthenticationMiddleware } from './checkAuthenticationMiddleware';

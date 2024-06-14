@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { checkingCellPhoneNumber } from '../utils/index.js';
-import { Users, Sessions, Widgets } from '../models/models.js';
+import { checkingCellPhoneNumber } from '../utils/index';
+import { Users, Sessions, Widgets } from '../models/models';
 export const sessionVerificationBeforeAuthenticationMiddleware = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {

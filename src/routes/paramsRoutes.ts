@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-import { paramsControllers } from '../controllers/index.js';
+import { paramsControllers } from '../controllers/index';
 
 const paramsRoutes = () => {
   const paramsRoutes = Router();

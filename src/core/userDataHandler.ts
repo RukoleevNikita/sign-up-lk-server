@@ -1,5 +1,5 @@
-import { tokenController, getWidgets } from '../utils/index.js';
-import { Users, Sessions, Widgets } from '../models/models.js';
+import { tokenController, getWidgets } from '../utils/index';
+import { Users, Sessions, Widgets } from '../models/models';
 import { Model } from 'sequelize';
 
 export const userDataHandler = {

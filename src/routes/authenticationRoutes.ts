@@ -1,8 +1,8 @@
 import { Request, Response, Router } from 'express';
-import { authentication } from '../controllers/index.js';
+import { authentication } from '../controllers/index';
 import {
   sessionVerificationBeforeAuthenticationMiddleware
-} from '../middleware/sessionVerificationBeforeAuthenticationMiddleware.js';
+} from '../middleware/sessionVerificationBeforeAuthenticationMiddleware';
 
 const authenticationRoutes = () => {
   const authenticationRoutes = Router();

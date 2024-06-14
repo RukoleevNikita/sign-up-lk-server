@@ -23,12 +23,12 @@ import { DataTypes } from 'sequelize';
 // }
 
 export interface CalendarEvent {
-  id: DataTypes.UUID;
-  date: DataTypes.DATE;
+  id: typeof DataTypes.UUID;
+  date: typeof DataTypes.DATE;
   name: string;
   service: number[];
-  start_time: DataTypes.DATE;
-  end_time: DataTypes.DATE;
+  start_time: typeof DataTypes.DATE;
+  end_time: typeof DataTypes.DATE;
   phone_number: string;
   notes: string;
 }
