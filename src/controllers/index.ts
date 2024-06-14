@@ -2,6 +2,6 @@
 export { authentication } from './authenticationController.js';
 export * as searchServiceSettingsController from './searchServiceSettingsController.js';
 export * as paramsControllers from './paramsControllers.js';
-export * as calendarController from './calendarController.js';
+export * as calendarController from './CalendarController.js';
 
 

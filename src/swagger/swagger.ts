@@ -19,6 +19,7 @@ const options: swaggerJsdoc.Options = {
     path.join(path.dirname(currentModulePath), 'docs', 'authentication-doc.ts'),
     path.join(path.dirname(currentModulePath), 'docs', 'params-doc.ts'),
     path.join(path.dirname(currentModulePath), 'docs', 'settings-doc.ts'),
+    path.join(path.dirname(currentModulePath), 'docs', 'managing-calendar-events-doc.ts'),
 
   ],
 };

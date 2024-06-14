@@ -37,7 +37,12 @@ export const sessionVerificationBeforeAuthenticationMiddleware = () => {
             return res.status(201).json({
               success: true,
               data: {
+                // FIXME костыль по типизации токена
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 token: session?.token,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 widgets: widgets.widgets
               },
               message: 'Данные о запущенной сессии.'

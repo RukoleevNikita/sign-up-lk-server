@@ -73,8 +73,9 @@
  *         schema:
  *           type: string
  *         required: true
+ *         description: Токен пользователя
  *       - in: query
- *         name: numbers
+ *         name: params
  *         schema:
  *           type: array
  *           items:
@@ -82,7 +83,7 @@
  *             enum: [0, 1, 2]
  *         style: form
  *         explode: false
- *         description: массив цифр где 0-маникюр, 1-педикюр, 2-визажист
+ *         description: Массив цифр, где 0 - маникюр, 1 - педикюр, 2 - визажист
  *         example: [0, 1, 2]
  *     responses:
  *       200:

@@ -22,19 +22,14 @@ const Widgets = sequelize.define(
 const CalendarEvents = sequelize.define(
   'calendarEvents',
   {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     date: { type: DataTypes.DATE },
-    event: {
-      type: DataTypes.JSONB,
-      defaultValue: {
-        name: { type: DataTypes.STRING },
-        service: { type: DataTypes.ARRAY(DataTypes.NUMBER) },
-        start_time: { type: DataTypes.DATE },
-        end_time: { type: DataTypes.DATE },
-        notes: { type: DataTypes.TEXT },
-      }
-    }
-
+    name: { type: DataTypes.STRING },
+    service: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
+    start_time: { type: DataTypes.DATE },
+    end_time: { type: DataTypes.DATE },
+    phone_number: { type: DataTypes.TEXT },
+    notes: { type: DataTypes.TEXT },
   }
 );
 const CalendarSettings = sequelize.define(

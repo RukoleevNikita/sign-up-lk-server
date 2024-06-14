@@ -9,8 +9,6 @@ export const checkAuthenticationMiddleware = () => {
       if (userId !== null && userId !== undefined) {
         if (await Sessions.findOne({where:  { userId }})) {
           res.locals = { id: userId, token: token };
-          // console.log('token ', token);
-          // console.log('userId ', userId);
           next();
         } else {
           return res.status(404).json({
