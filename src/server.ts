@@ -1,12 +1,12 @@
 import express, { Express, ErrorRequestHandler } from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import { sequelize } from './service/index.js';
+import { sequelize } from './service/index';
 import { createServer } from 'http';
-import swaggerDocs from './swagger/swagger.js';
-import { settingsRoutes, authenticationRoutes, paramsRoutes } from './routes/index.js';
-import { checkAuthenticationMiddleware } from './middleware/index.js';
-import calendarRouter from './routes/calendarRouter.js';
+import swaggerDocs from './swagger/swagger';
+import { settingsRoutes, authenticationRoutes, paramsRoutes } from './routes/index';
+import { checkAuthenticationMiddleware } from './middleware/index';
+import calendarRouter from './routes/calendarRouter';
 
 
 const app: Express = express();

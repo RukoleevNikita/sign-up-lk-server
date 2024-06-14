@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import NodeCache from 'node-cache';
-import { userDataHandler } from '../core/index.js';
-import { tokenController } from '../utils/index.js';
+import { userDataHandler } from '../core/index';
+import { tokenController } from '../utils/index';
 const cache = new NodeCache({ stdTTL: 90 });
 
 export const authentication = {

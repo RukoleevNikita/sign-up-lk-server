@@ -1,4 +1,4 @@
-import { calendarHandler } from '../core/index.js';
+import { calendarHandler } from '../core/index';
 import { Request, Response } from 'express';
 import { CalendarEvent } from '../core/calendar/interfaces.js';
 // import { UserDataSearchService } from '../core/searchServiceSettings/interfaces.js';

@@ -1,7 +1,7 @@
 // import { client } from './../redis/redisAuth';
 // import { authentication } from './../controllers/UserController.js';
-import generateVerificationCode from '../utils/generateVerificationCode.js';
-import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber.js';
+// import generateVerificationCode from '../utils/generateVerificationCode';
+import checkingCellPhoneNumber from '../utils/checkingCellPhoneNumber';
 import express from 'express';
 
 export const authenticationSocket = (io: any, authenticationController: any, findOne: any, insertOne: any) => {

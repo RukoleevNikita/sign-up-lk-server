@@ -1,4 +1,4 @@
-import { getSpecialization } from '../utils/index.js';
+// import { getSpecialization } from '../utils/index';
 import { Request, Response } from 'express';
 
 export const getListServices = async (req: Request, res: Response) => {

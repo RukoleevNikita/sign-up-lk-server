@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { calendarController } from '../controllers/index.js';
+import { calendarController } from '../controllers/index';
 
 const calendarRoutes = () => {
   const calendarRoutes = Router();

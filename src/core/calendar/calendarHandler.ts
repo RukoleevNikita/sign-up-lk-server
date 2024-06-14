@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import { SearchServiceSettings, CalendarEvents } from '../../models/models.js';
+import { SearchServiceSettings, CalendarEvents } from '../../models/models';
 import { isDeepStrictEqual } from 'util';
-import { CalendarEvent } from './interfaces.js';
+import { CalendarEvent } from './interfaces';
 // import { UserDataSearchService } from './interfaces.js';
 export const calendarHandler = {
   getCalendarDate: async (userId: string): Promise<CalendarEvent | null> => {

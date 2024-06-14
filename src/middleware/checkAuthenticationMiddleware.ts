@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { tokenController } from '../utils/index.js';
+import { tokenController } from '../utils/index';
 import { Sessions } from '../models/models.js';
 export const checkAuthenticationMiddleware = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
