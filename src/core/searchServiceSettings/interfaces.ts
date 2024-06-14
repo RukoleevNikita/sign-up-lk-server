@@ -6,7 +6,7 @@ interface UserServicesObject {
 
 export interface UserDataSearchService {
   id: number;
-  userId: DataTypes.UUID;
+  userId: typeof DataTypes.UUID;
   activeAccount: boolean;
   socialNetwork: string[];
   workPhoneNumber: string;
