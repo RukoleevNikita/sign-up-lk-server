@@ -6,6 +6,7 @@ import { CalendarEvent } from '../core/calendar/interfaces.js';
 export const getCalendarData = async (req: Request, res: Response) => {
   try {
     // console.log('req.query ', req.query);
+    // TODO добавить поле с ФИО клиента
     const data = [
       {
         id: 'asd_asd21231-2dsa',
